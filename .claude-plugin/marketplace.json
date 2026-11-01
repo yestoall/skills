@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "yestoall",
+  "description": "Public skills for the yestoall apps (Nevera, and more to come). One plugin per app.",
+  "owner": {
+    "name": "Nacho Rapallo",
+    "url": "https://www.yestoall.com"
+  },
+  "plugins": [
+    {
+      "name": "nevera",
+      "source": "./plugins/nevera",
+      "description": "Turn YouTube cooking videos and recipe web pages into a recipe batch with photos that opens in Nevera.",
+      "version": "0.1.0",
+      "category": "productivity",
+      "homepage": "https://www.yestoall.com/skills#nevera-recipes"
+    }
+  ]
+}
