@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [En español, más abajo](#en-español)
 
-Version 0.2.2
+Version 0.3.0
 
 ## nevera-recipes
 
@@ -69,8 +69,10 @@ does: `yt-dlp` (downloads), `ffmpeg` (the photos), and Whisper
 Linux.
 
 When it's done, it gives you the path of the batch,
-`~/Nevera/nevera-lote-YYYY-MM-DD.zip`. Send it to your phone with AirDrop,
-Quick Share, iCloud Drive, Google Drive or a cable, and open it:
+`~/Nevera/nevera-lote-YYYY-MM-DD.zip`. On a Mac, it asks how you want to send
+it to your phone: it copies it to iCloud Drive for you, or opens AirDrop with
+the file ready for you to drag. From anywhere else, use Quick Share, iCloud
+Drive, Google Drive or a cable. Then open it:
 
 - **On an iPhone**, in the Files app (AirDrop leaves it in Downloads), touch
   and hold the file and tap **Share** → Nevera.
@@ -129,7 +131,7 @@ python3 -m unittest
 
 The tests use only the standard library. The skill lives in
 `plugins/nevera/skills/nevera-recipes/`: `SKILL.md` and its `scripts/`. Each
-version is a tag (`v0.2.2`), with its entry in `CHANGELOG.md` and its number
+version is a tag (`v0.3.0`), with its entry in `CHANGELOG.md` and its number
 in the plugin's `plugin.json`, in `marketplace.json` and at the top of this
 README; `tests/test_version.py` fails if one of them is left behind. The batch format has its own version
 (`"version": 1`), which only goes up when Nevera can read the new one and
@@ -171,8 +173,10 @@ O, en Claude Code:
 
 Luego pídeselo a tu IA con tus palabras y pégale los enlaces. La primera vez
 instala lo que le falta (`yt-dlp`, `ffmpeg` y Whisper) y te avisa antes.
-El Lote queda en `~/Nevera/nevera-lote-AAAA-MM-DD.zip`: pásalo al teléfono
-(AirDrop, Quick Share, iCloud Drive, Google Drive o un cable). En el iPhone,
+El Lote queda en `~/Nevera/nevera-lote-AAAA-MM-DD.zip`. En un Mac te pregunta
+cómo quieres pasarlo al teléfono: lo copia a iCloud Drive, o abre AirDrop con
+el fichero a mano para que lo arrastres. Desde otro ordenador, usa Quick Share,
+iCloud Drive, Google Drive o un cable. En el iPhone,
 búscalo en la app Archivos (AirDrop lo deja en Descargas), mantenlo pulsado
 y toca **Compartir** → Nevera. En Android, ábrelo desde Archivos o Descargas
 y elige Nevera. En los dos, también desde Nevera: **Elegir archivo**, en la

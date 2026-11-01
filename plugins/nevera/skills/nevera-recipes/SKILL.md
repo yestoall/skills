@@ -310,14 +310,23 @@ Tell the user, short:
   without a recipe, Instagram posts with the `message` of `instagram.py
   meta` (and the ones skipped because the user said no to the session), the
   unrecognized ones, and the words you corrected in a transcript;
-- how to get the `.zip` to the phone, for their system, without doing it
-  yourself:
-  - Mac to iPhone: AirDrop, iCloud Drive or a cable. AirDrop does not ask
-    which app opens the file: the iPhone saves it to Downloads, in the Files
-    app;
-  - Windows or Linux to Android: Quick Share, Google Drive, or a USB cable to
-    the Downloads folder;
-  - to an iPhone from Windows or Linux: iCloud Drive (on the web, at
+- how to get the `.zip` to the phone:
+  - **on a Mac, ask** how they want to send it, and do what they choose:
+    - iCloud Drive: `python3 <scripts>/deliver.py icloud <batch.zip>` copies
+      it to a Nevera folder in iCloud Drive, and it shows up in the Files app
+      on the iPhone (in a moment, or more if the connection is slow). The
+      `.zip` stays in `~/Nevera/` too;
+    - AirDrop: `python3 <scripts>/deliver.py airdrop <batch.zip>` opens the
+      AirDrop window and shows the file in the Finder. Tell them to drag it
+      onto their phone: a script can't send it by itself. If their phone
+      isn't there, AirDrop has to be on, for contacts or for everyone, with
+      the screen unlocked. It doesn't ask which app opens the file: the
+      iPhone saves it to Downloads, in the Files app;
+    - nothing: it stays in `~/Nevera/`, and they can send it however they
+      like;
+  - Windows or Linux to Android: tell them Quick Share, Google Drive, or a USB
+    cable to the Downloads folder;
+  - to an iPhone from Windows or Linux: tell them iCloud Drive (on the web, at
     icloud.com);
 - and how to open it on the phone:
   - iPhone: in the Files app, touch and hold the file, then **Share** →
@@ -330,4 +339,4 @@ Tell the user, short:
   already has come unticked.
 
 Done when the user has the path, the list, the failures and the way to the
-phone.
+phone, and on a Mac, what they chose is done.

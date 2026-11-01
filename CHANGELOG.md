@@ -4,6 +4,14 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.3.0 · 2026-11-01
+
+- On a Mac, the skill asks how to send the batch to the phone when it's done.
+  `scripts/deliver.py` copies it to a Nevera folder in iCloud Drive, or opens
+  the AirDrop window and shows the file in the Finder, ready to drag. A script
+  can't start AirDrop by itself: on macOS 27, AppKit offers no sharing service
+  for a file from a script, a binary or a small app.
+
 ## 0.2.2 · 2026-11-01
 
 - Linux: `doctor.py` runs `apt-get update` before installing, and always
