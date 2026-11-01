@@ -4,6 +4,14 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.2.2 · 2026-11-01
+
+- Linux: `doctor.py` runs `apt-get update` before installing, and always
+  asks for `python3-venv` when it has to create `~/Nevera/.venv`. On a fresh
+  Debian there are no package lists yet, and its `python3` has no `venv`
+  module without that package. Found by the Docker check, which now passes
+  on Debian 12.
+
 ## 0.2.1 · 2026-11-01
 
 - The report says how to open the batch on an iPhone as it works today: in

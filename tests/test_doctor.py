@@ -52,7 +52,9 @@ class Plan(unittest.TestCase):
         self.assertEqual(
             steps("linux", tools={"node": "/usr/bin/node"}, python="/usr/bin/python3", whisper=False),
             [
-                "sudo apt-get install -y ffmpeg",
+                # a fresh Debian has no package lists, and its python3 lacks
+                # the venv module until python3-venv is in (seen in Docker)
+                "sudo apt-get update && sudo apt-get install -y ffmpeg python3-venv",
                 "/usr/bin/python3 -m venv ~/Nevera/.venv",
                 '~/Nevera/.venv/bin/python -m pip install faster-whisper "yt-dlp[default]"',
             ],

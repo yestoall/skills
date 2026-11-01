@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [En español, más abajo](#en-español)
 
-Version 0.2.1
+Version 0.2.2
 
 ## nevera-recipes
 
@@ -84,7 +84,7 @@ Nevera shows you every recipe before saving any.
 | System | Status |
 | --- | --- |
 | macOS | Tested |
-| Linux (Debian, Ubuntu) | Not tested yet: `docker build -t yestoall-skills-test . && docker run --rm yestoall-skills-test` runs the check |
+| Linux (Debian, Ubuntu) | Tested on Debian 12 in Docker: `docker build -t yestoall-skills-test . && docker run --rm yestoall-skills-test` runs the check |
 | Windows | Not tested yet |
 
 On Windows, the skill installs with `winget install --id yt-dlp.yt-dlp -e`,
@@ -129,7 +129,7 @@ python3 -m unittest
 
 The tests use only the standard library. The skill lives in
 `plugins/nevera/skills/nevera-recipes/`: `SKILL.md` and its `scripts/`. Each
-version is a tag (`v0.2.1`), with its entry in `CHANGELOG.md` and its number
+version is a tag (`v0.2.2`), with its entry in `CHANGELOG.md` and its number
 in the plugin's `plugin.json`, in `marketplace.json` and at the top of this
 README; `tests/test_version.py` fails if one of them is left behind. The batch format has its own version
 (`"version": 1`), which only goes up when Nevera can read the new one and
@@ -179,7 +179,7 @@ y elige Nevera. En los dos, también desde Nevera: **Elegir archivo**, en la
 pantalla de importar. Nevera te enseña todas las recetas antes de guardar
 ninguna.
 
-Probada en macOS. Linux y Windows, todavía sin probar.
+Probada en macOS y en Linux (Debian 12). Windows, todavía sin probar.
 
 ## License
 

@@ -93,12 +93,16 @@ def plan(
         apt = []
         if not (has("ffmpeg") and has("ffprobe")):
             apt.append("ffmpeg")
-        if not python and not whisper:
-            apt += ["python3", "python3-venv"]
-            python = "python3"
+        if not whisper:
+            # el python3 de Debian no trae el módulo venv sin python3-venv
+            if not python:
+                apt.append("python3")
+                python = "python3"
+            apt.append("python3-venv")
         if apt:
+            # un Debian recién instalado no tiene listas de paquetes
             steps.append(
-                f"sudo apt-get install -y {' '.join(apt)}"
+                f"sudo apt-get update && sudo apt-get install -y {' '.join(apt)}"
                 if has_apt
                 else f"Install {', '.join(apt)} with your package manager"
             )
