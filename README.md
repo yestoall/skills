@@ -3,7 +3,7 @@
 Skills for the AI on your computer, made for the yestoall apps. One plugin
 per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
-[En español, más abajo](#en-español)
+[Léelo en español](README.es.md)
 
 Version 0.3.1
 
@@ -133,59 +133,10 @@ python3 -m unittest
 The tests use only the standard library. The skill lives in
 `plugins/nevera/skills/nevera-recipes/`: `SKILL.md` and its `scripts/`. Each
 version is a tag (`v0.3.1`), with its entry in `CHANGELOG.md` and its number
-in the plugin's `plugin.json`, in `marketplace.json` and at the top of this
-README; `tests/test_version.py` fails if one of them is left behind. The batch format has its own version
-(`"version": 1`), which only goes up when Nevera can read the new one and
-still reads the old.
-
-## En español
-
-Skills para la IA de tu ordenador, hechas para las apps de yestoall. Hoy,
-una: `nevera-recipes`, para [Nevera](https://www.yestoall.com/nevera).
-
-Dale a tu IA una lista de vídeos de cocina de YouTube, reels y posts de
-Instagram y webs de recetas, y
-te devuelve un `.zip` que abres con Nevera en el teléfono: cada receta con
-sus ingredientes, sus pasos y una foto del plato terminado. Los subtítulos
-del vídeo, si los tiene; si no, transcribe el audio con Whisper, en tu
-ordenador. Recuerda los enlaces que ya hizo, para que puedas pasarle la misma
-lista dos veces, y te dice qué no pudo sacar y por qué.
-
-Instagram enseña algunos posts solo a quien tiene la sesión abierta. La skill
-saca primero lo que ve cualquiera y, si un post pide sesión, te pregunta una
-vez por Lote si puede usar la de un navegador de tu ordenador, y cuál.
-`yt-dlp` lee sus cookies en memoria, solo para esas descargas: no se guardan
-en ningún fichero ni salen de tu ordenador, y no necesita tu contraseña. Si
-dices que no, esos posts van al informe y el siguiente Lote los vuelve a
-intentar.
-
-Instálala con Node 22 o más:
-
-```bash
-npx skills add yestoall/skills --skill nevera-recipes
-```
-
-O, en Claude Code:
-
-```text
-/plugin marketplace add yestoall/skills
-/plugin install nevera@yestoall
-```
-
-Luego pídeselo a tu IA con tus palabras y pégale los enlaces. La primera vez
-instala lo que le falta (`yt-dlp`, `ffmpeg` y Whisper) y te avisa antes.
-El Lote queda en `~/Nevera/nevera-lote-AAAA-MM-DD.zip`. En un Mac te pregunta
-cómo quieres pasarlo al teléfono: lo copia a iCloud Drive, o te enseña el
-fichero en el Finder para que hagas clic derecho → **Compartir** → **AirDrop**.
-Desde otro ordenador, usa Quick Share,
-iCloud Drive, Google Drive o un cable. En el iPhone,
-búscalo en la app Archivos (AirDrop lo deja en Descargas), mantenlo pulsado
-y toca **Compartir** → Nevera. En Android, ábrelo desde Archivos o Descargas
-y elige Nevera. En los dos, también desde Nevera: **Elegir archivo**, en la
-pantalla de importar. Nevera te enseña todas las recetas antes de guardar
-ninguna.
-
-Probada en macOS y en Linux (Debian 12). Windows, todavía sin probar.
+in the plugin's `plugin.json`, in `marketplace.json` and at the top of both
+READMEs; `tests/test_version.py` fails if one of them is left behind. The batch
+format has its own version (`"version": 1`), which only goes up when Nevera can
+read the new one and still reads the old.
 
 ## License
 

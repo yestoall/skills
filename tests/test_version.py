@@ -1,6 +1,7 @@
-"""The version is written in four places: the plugin's plugin.json (the one
+"""The version is written in five places: the plugin's plugin.json (the one
 Claude Code reads), its entry in the marketplace, the top of CHANGELOG.md
-and the README. A release that bumps one and forgets another fails here."""
+and the two READMEs. A release that bumps one and forgets another fails here,
+and so does a README that loses a section the other one has."""
 
 import json
 import re
@@ -31,6 +32,17 @@ def readme_version() -> str:
     return re.search(r"^Version (\d+\.\d+\.\d+)$", text, re.M).group(1)
 
 
+def spanish_readme_version() -> str:
+    text = (ROOT / "README.es.md").read_text(encoding="utf-8")
+    return re.search(r"^Versión (\d+\.\d+\.\d+)$", text, re.M).group(1)
+
+
+def heading_levels(name: str) -> list:
+    text = (ROOT / name).read_text(encoding="utf-8")
+    text = re.sub(r"^```.*?^```$", "", text, flags=re.M | re.S)
+    return re.findall(r"^(#+) ", text, re.M)
+
+
 class Version(unittest.TestCase):
     def test_every_place_says_the_same_version(self):
         version = plugin_version()
@@ -40,9 +52,18 @@ class Version(unittest.TestCase):
                 "marketplace.json": marketplace_version(),
                 "CHANGELOG.md": changelog_version(),
                 "README.md": readme_version(),
+                "README.es.md": spanish_readme_version(),
             },
-            dict.fromkeys(("marketplace.json", "CHANGELOG.md", "README.md"), version),
+            dict.fromkeys(
+                ("marketplace.json", "CHANGELOG.md", "README.md", "README.es.md"),
+                version,
+            ),
         )
+
+
+class Readmes(unittest.TestCase):
+    def test_both_have_the_same_sections(self):
+        self.assertEqual(heading_levels("README.es.md"), heading_levels("README.md"))
 
 
 if __name__ == "__main__":

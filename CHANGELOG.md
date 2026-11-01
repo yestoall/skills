@@ -11,6 +11,8 @@ the batch format has a version of its own (`"version": 1` in
   the AirDrop window. On macOS 27, dragging the file onto that window started
   no send, even with the phone in sight, and sharing from the Finder worked
   the first time.
+- Two READMEs: `README.md` in English and `README.es.md`, complete, in Spanish.
+  A test fails if their sections or their version stop matching.
 
 ## 0.3.0 · 2026-11-01
 
