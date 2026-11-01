@@ -25,6 +25,10 @@ venv of its own at ~/Downloads/nevera/.venv (NEVERA_HOME overrides
 breaks an old yt-dlp: old is more than two months since its release, and the
 update is the command for the way this one was installed.
 
+`updates` is what the user should hear about: a newer version of this skill,
+and an old yt-dlp. To know about the skill, it reads one public file from
+GitHub, sends nothing, and says nothing if the answer doesn't come.
+
 Standard library only: it runs with any Python 3.9+.
 """
 
@@ -36,14 +40,20 @@ import re
 import shutil
 import subprocess
 import sys
+import urllib.request
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 from machine import nevera_home, this_system
 
 PYTHON_RANGE = ((3, 9), (3, 14))
 TOOLS = ("yt-dlp", "ffmpeg", "ffprobe", "deno", "node")
 OLD_AFTER_DAYS = 60
+SKILL_VERSION = "0.7.0"
+PUBLISHED_PLUGIN = (
+    "https://raw.githubusercontent.com/yestoall/skills/main"
+    "/plugins/nevera/.claude-plugin/plugin.json"
+)
 
 
 def pick_python(found: dict) -> Optional[str]:
@@ -192,6 +202,60 @@ def _yt_dlp_version(path: Optional[str]) -> Optional[str]:
         return None
 
 
+#- a new version of the skill -
+
+
+def _fetch_published() -> bytes:
+    with urllib.request.urlopen(PUBLISHED_PLUGIN, timeout=3) as response:
+        return response.read()
+
+
+def latest_version(fetch: Callable[[], bytes] = _fetch_published) -> Optional[str]:
+    """The published version, or None: no network never stops the skill."""
+    try:
+        return json.loads(fetch())["version"]
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def _version_numbers(version: Optional[str]) -> Optional[tuple]:
+    if not version or not re.fullmatch(r"\d+(\.\d+)*", version):
+        return None
+    return tuple(int(part) for part in version.split("."))
+
+
+def is_newer(latest: Optional[str], current: str) -> bool:
+    latest_numbers = _version_numbers(latest)
+    current_numbers = _version_numbers(current)
+    return bool(latest_numbers and current_numbers and latest_numbers > current_numbers)
+
+
+def skill_update_command(scripts: str) -> str:
+    """How to update the skill: as a plugin, or with the skills CLI."""
+    if "/.claude/plugins/" in Path(scripts).as_posix():
+        return "claude plugin marketplace update yestoall && claude plugin update nevera@yestoall"
+    return "npx skills update nevera-recipes"
+
+
+def updates(skill: dict, yt_dlp: dict) -> list:
+    """What the user should hear about, the skill first."""
+    found = []
+    if is_newer(skill["latest"], skill["current"]):
+        found.append(
+            {
+                "name": "nevera-recipes",
+                "current": skill["current"],
+                "latest": skill["latest"],
+                "command": skill["command"],
+            }
+        )
+    if yt_dlp["old"]:
+        found.append(
+            {"name": "yt-dlp", "current": yt_dlp["current"], "command": yt_dlp["command"]}
+        )
+    return found
+
+
 #- what is on this machine -
 
 
@@ -255,6 +319,8 @@ def check() -> dict:
     yt_dlp_version = _yt_dlp_version(tools["yt-dlp"])
     # brew's bin/ is a symlink: its real path says who installed it
     yt_dlp_path = str(Path(tools["yt-dlp"]).resolve()) if tools["yt-dlp"] else None
+    yt_dlp_old = is_old(version_age(yt_dlp_version, _dt.date.today()))
+    yt_dlp_update = update_command(system, yt_dlp_path, str(venv.resolve()))
     # yt-dlp only turns Deno on by itself; Node has to be asked for
     yt_dlp_args = ["--js-runtimes", "node"] if not tools["deno"] and tools["node"] else []
     return {
@@ -269,8 +335,17 @@ def check() -> dict:
         },
         "yt_dlp_args": yt_dlp_args,
         "yt_dlp_version": yt_dlp_version,
-        "yt_dlp_old": is_old(version_age(yt_dlp_version, _dt.date.today())),
-        "yt_dlp_update": update_command(system, yt_dlp_path, str(venv.resolve())),
+        "yt_dlp_old": yt_dlp_old,
+        "yt_dlp_update": yt_dlp_update,
+        "version": SKILL_VERSION,
+        "updates": updates(
+            {
+                "current": SKILL_VERSION,
+                "latest": latest_version(),
+                "command": skill_update_command(str(Path(__file__).resolve().parent)),
+            },
+            {"current": yt_dlp_version, "old": yt_dlp_old, "command": yt_dlp_update},
+        ),
         "steps": steps,
         "whisper_steps": whisper_steps,
         "ready": not steps,

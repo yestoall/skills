@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.6.0
+Versión 0.7.0
 
 ## nevera-recipes
 
@@ -62,6 +62,23 @@ plugins:
 /plugin marketplace add yestoall/skills
 /plugin install nevera@yestoall
 ```
+
+### Actualizar
+
+Actualízala igual que la instalaste:
+
+```bash
+# con npx skills
+npx skills update nevera-recipes
+
+# como plugin de Claude Code; luego abre una sesión nueva
+claude plugin marketplace update yestoall && claude plugin update nevera@yestoall
+```
+
+No tienes que estar pendiente. Cada vez que la usas, la skill lee un fichero
+público de GitHub para ver si hay una versión nueva, y no envía nada. Si la hay,
+te lo dice lo primero, en un bloque destacado con el comando, y sigue con la
+versión que tienes. Lo mismo te dice de un `yt-dlp` viejo, que actualiza ella.
 
 ### Usar
 
@@ -146,8 +163,8 @@ python3 -m unittest
 Los tests solo usan la biblioteca estándar. La skill vive en
 `plugins/nevera/skills/nevera-recipes/`: el `SKILL.md` y sus `scripts/`. Cada
 versión es una etiqueta (`v0.4.0`), con su entrada en `CHANGELOG.md` y su número
-en el `plugin.json` del plugin, en `marketplace.json` y al principio de los dos
-README; `tests/test_version.py` falla si alguno se queda atrás. El formato del
+en el `plugin.json` del plugin, en `marketplace.json`, en `doctor.py` y al
+principio de los dos README; `tests/test_version.py` falla si alguno se queda atrás. El formato del
 Lote tiene su propia versión (`"version": 1`), que solo sube cuando Nevera sabe
 leer la nueva y sigue leyendo la anterior.
 

@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [Léelo en español](README.es.md)
 
-Version 0.6.0
+Version 0.7.0
 
 ## nevera-recipes
 
@@ -59,6 +59,24 @@ In Claude Code, you can also add this repository as a plugin marketplace:
 /plugin marketplace add yestoall/skills
 /plugin install nevera@yestoall
 ```
+
+### Update
+
+Update the same way you installed it:
+
+```bash
+# with npx skills
+npx skills update nevera-recipes
+
+# as a Claude Code plugin; then start a new session
+claude plugin marketplace update yestoall && claude plugin update nevera@yestoall
+```
+
+You don't need to keep track of it. Each time you use it, the skill reads one
+public file from GitHub to see if there's a newer version, and sends nothing. If
+there is, it tells you first thing, in a highlighted block with the command, and
+goes on with the version you have. It tells you the same about an old `yt-dlp`,
+which it updates for you.
 
 ### Use
 
@@ -142,7 +160,7 @@ python3 -m unittest
 The tests use only the standard library. The skill lives in
 `plugins/nevera/skills/nevera-recipes/`: `SKILL.md` and its `scripts/`. Each
 version is a tag (`v0.4.0`), with its entry in `CHANGELOG.md` and its number
-in the plugin's `plugin.json`, in `marketplace.json` and at the top of both
+in the plugin's `plugin.json`, in `marketplace.json`, in `doctor.py` and at the top of both
 READMEs; `tests/test_version.py` fails if one of them is left behind. The batch
 format has its own version (`"version": 1`), which only goes up when Nevera can
 read the new one and still reads the old.

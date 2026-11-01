@@ -15,7 +15,7 @@ skills from it with `npx skills add` or as a Claude Code marketplace.
 - Tests: `python3 -m unittest`. The Linux check runs in Docker (see the
   README).
 - A release bumps the version in `plugins/<app>/.claude-plugin/plugin.json`,
-  `.claude-plugin/marketplace.json`, the top of `CHANGELOG.md` and both
-  READMEs, and tags it (`vX.Y.Z`). `tests/test_version.py` checks they all
+  `.claude-plugin/marketplace.json`, `SKILL_VERSION` in `doctor.py`, the top of
+  `CHANGELOG.md` and both READMEs, and tags it (`vX.Y.Z`). `tests/test_version.py` checks they all
   agree.
 - Nothing here commits or pushes on its own: Nacho publishes.

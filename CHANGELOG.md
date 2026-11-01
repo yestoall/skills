@@ -4,6 +4,15 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.7.0 · 2026-11-01
+
+- The skill says when something needs updating, first thing and in a highlighted
+  block: a newer version of itself, with the command for the way it was installed,
+  and an old `yt-dlp`. `doctor.py` prints them in `updates`. To know about the
+  skill, it reads one public file from GitHub and sends nothing; without an answer
+  it says nothing. The block for the skill comes again at the end of the report.
+- The READMEs explain how to update, with `npx skills` and as a plugin.
+
 ## 0.6.0 · 2026-11-01
 
 - A batch cut short no longer leaks into the next one. `scripts/work.py status`

@@ -1,12 +1,15 @@
-"""The version is written in five places: the plugin's plugin.json (the one
-Claude Code reads), its entry in the marketplace, the top of CHANGELOG.md
-and the two READMEs. A release that bumps one and forgets another fails here,
+"""The version is written in six places: the plugin's plugin.json (the one
+Claude Code reads), its entry in the marketplace, the top of CHANGELOG.md,
+the two READMEs and doctor.py, which goes with the skill however it is
+installed and compares itself with what is published. A release that bumps one and forgets another fails here,
 and so does a README that loses a section the other one has."""
 
 import json
 import re
 import unittest
 from pathlib import Path
+
+from doctor import SKILL_VERSION
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -53,9 +56,16 @@ class Version(unittest.TestCase):
                 "CHANGELOG.md": changelog_version(),
                 "README.md": readme_version(),
                 "README.es.md": spanish_readme_version(),
+                "doctor.py": SKILL_VERSION,
             },
             dict.fromkeys(
-                ("marketplace.json", "CHANGELOG.md", "README.md", "README.es.md"),
+                (
+                    "marketplace.json",
+                    "CHANGELOG.md",
+                    "README.md",
+                    "README.es.md",
+                    "doctor.py",
+                ),
                 version,
             ),
         )

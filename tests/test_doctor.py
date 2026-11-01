@@ -6,10 +6,14 @@ import unittest
 import datetime
 
 from doctor import (
+    is_newer,
     is_old,
+    latest_version,
     pick_python,
     plan,
+    skill_update_command,
     update_command,
+    updates,
     version_age,
     whisper_plan,
 )
@@ -151,6 +155,77 @@ class OldYtDlp(unittest.TestCase):
 
     def test_nothing_to_update_when_it_is_not_installed(self):
         self.assertIsNone(update_command("macos", None, VENV))
+
+
+class NewSkill(unittest.TestCase):
+    def test_a_newer_version_is_compared_as_numbers(self):
+        self.assertTrue(is_newer("0.10.0", "0.9.0"))
+        self.assertTrue(is_newer("1.0.0", "0.6.0"))
+        self.assertFalse(is_newer("0.6.0", "0.6.0"))
+        self.assertFalse(is_newer("0.5.0", "0.6.0"))
+
+    def test_no_answer_from_github_is_no_news(self):
+        for latest in (None, "", "not a version"):
+            with self.subTest(latest):
+                self.assertFalse(is_newer(latest, "0.6.0"))
+
+    def test_the_latest_version_comes_from_the_published_plugin(self):
+        self.assertEqual(latest_version(lambda: b'{"version": "0.7.0"}'), "0.7.0")
+
+    def test_a_failed_or_strange_answer_never_stops_the_skill(self):
+        def offline():
+            raise OSError("no network")
+
+        for fetch in (offline, lambda: b"<html>", lambda: b"[1]"):
+            with self.subTest(fetch):
+                self.assertIsNone(latest_version(fetch))
+
+    def test_it_updates_the_way_it_was_installed(self):
+        self.assertEqual(
+            skill_update_command(
+                "/Users/ana/.claude/plugins/cache/yestoall/nevera/0.6.0/skills/nevera-recipes/scripts"
+            ),
+            "claude plugin marketplace update yestoall && claude plugin update nevera@yestoall",
+        )
+        self.assertEqual(
+            skill_update_command("/Users/ana/.claude/skills/nevera-recipes/scripts"),
+            "npx skills update nevera-recipes",
+        )
+
+
+class Updates(unittest.TestCase):
+    SKILL = {"current": "0.6.0", "latest": "0.7.0", "command": "npx skills update"}
+    YT_DLP = {"current": "2026.01.01", "old": True, "command": "brew upgrade yt-dlp"}
+
+    def test_nothing_to_say_when_everything_is_current(self):
+        self.assertEqual(
+            updates(dict(self.SKILL, latest="0.6.0"), dict(self.YT_DLP, old=False)), []
+        )
+
+    def test_a_new_version_of_the_skill(self):
+        self.assertEqual(
+            updates(self.SKILL, dict(self.YT_DLP, old=False)),
+            [
+                {
+                    "name": "nevera-recipes",
+                    "current": "0.6.0",
+                    "latest": "0.7.0",
+                    "command": "npx skills update",
+                }
+            ],
+        )
+
+    def test_an_old_yt_dlp(self):
+        self.assertEqual(
+            updates(dict(self.SKILL, latest=None), self.YT_DLP),
+            [{"name": "yt-dlp", "current": "2026.01.01", "command": "brew upgrade yt-dlp"}],
+        )
+
+    def test_both_at_once_the_skill_first(self):
+        self.assertEqual(
+            [u["name"] for u in updates(self.SKILL, self.YT_DLP)],
+            ["nevera-recipes", "yt-dlp"],
+        )
 
 
 class PickPython(unittest.TestCase):

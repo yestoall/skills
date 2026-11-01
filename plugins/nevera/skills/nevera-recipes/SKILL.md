@@ -49,8 +49,21 @@ terminal in. Tell the user to allow it. If it was refused, you get `Operation
 not permitted`, and it is turned on in System Settings → Privacy & Security →
 Files & Folders.
 
-If `yt_dlp_old` is true, yt-dlp is more than two months old and YouTube may
-have left it behind: tell the user in one line and run `yt_dlp_update`.
+**If `updates` has anything, say it first, before any other word, as a
+highlighted block in the user's language.** It must not get lost in the text:
+
+```markdown
+> ⚠️ **New version of nevera-recipes: 0.7.0** (you have 0.6.0)
+> Update it with `<command>` and start a new session. This batch goes on with the version you have.
+```
+
+```markdown
+> ⚠️ **yt-dlp is old** (2026.01.01): updating it, because YouTube breaks old versions.
+```
+
+The skill's own update is the user's: give them the `command` and don't run it,
+because it only applies from the next session. yt-dlp's you run yourself, right
+then, with its `command`. Neither stops the batch.
 
 From here on, call yt-dlp, ffmpeg, ffprobe and the venv's Python by the
 paths in `commands`: `<yt-dlp>`, `<ffmpeg>`, `<ffprobe>` and
@@ -399,6 +412,8 @@ python3 <scripts>/work.py clean
 
 Then do what they chose, and tell them how it reaches the phone:
 
+- if `updates` had a new version of the skill, the same highlighted block again,
+  at the very end of the report: a long batch has scrolled the first one away;
 - the path of the `.zip`;
 - how to get it there:
   - on a Mac:
