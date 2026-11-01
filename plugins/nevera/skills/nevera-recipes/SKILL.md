@@ -39,9 +39,8 @@ python3 <scripts>/doctor.py
 
 It prints what is installed and `steps`: the commands still missing for this
 system, in order. With steps, tell the user in one line what you are about
-to install and why (yt-dlp downloads, ffmpeg cuts the photo, Whisper
-transcribes videos without subtitles, in its own folder at `<home>/.venv`),
-then run them one by one. A step that needs the user (installing Homebrew, a
+to install and why (yt-dlp downloads, ffmpeg cuts the photo), then run them
+one by one. A step that needs the user (installing Homebrew, a
 `sudo` password) goes to them as it is written. Run `doctor.py` again until
 `ready` is true.
 
@@ -50,14 +49,39 @@ terminal in. Tell the user to allow it. If it was refused, you get `Operation
 not permitted`, and it is turned on in System Settings → Privacy & Security →
 Files & Folders.
 
+If `yt_dlp_old` is true, yt-dlp is more than two months old and YouTube may
+have left it behind: tell the user in one line and run `yt_dlp_update`.
+
 From here on, call yt-dlp, ffmpeg, ffprobe and the venv's Python by the
 paths in `commands`: `<yt-dlp>`, `<ffmpeg>`, `<ffprobe>` and
 `<venv python>` in the commands below. Add `yt_dlp_args` to every yt-dlp
-call, where they show `<yt_dlp_args>` (it is empty on most machines).
+call, where they show `<yt_dlp_args>` (it is empty on most machines). Whisper
+isn't part of being ready: `<venv python>` is null until a link needs it
+(step 3).
 
 Done when `doctor.py` says `"ready": true`.
 
 ## 2. The links
+
+First, see whether an earlier batch stopped halfway, before you save anything
+in `<home>/work/`:
+
+```bash
+python3 <scripts>/work.py status
+```
+
+If `leftover` is true, tell the user what it left: the `recipes` already
+written, by name, and how many links are `pending`. Then ask one question:
+
+- **Continue it**: add the new links to the end of `<home>/work/links.txt` and
+  run `status` again. Its `pending` are the links to do, instead of the list
+  below. Reuse what a link's folder already has, like a `transcript.txt` or a
+  video.
+- **Start over**: `python3 <scripts>/work.py clean`. Its recipes are gone, so
+  its links can be done again.
+
+Never mix them without asking: a recipe left in `recipes.json` would go into
+the new batch.
 
 The user pastes links in the chat or names a file (Nevera's "Copy links"
 gives one per line). Save what they pasted to `<home>/work/links.txt`, then:
@@ -117,6 +141,11 @@ Go link by link, steps 3 to 5, in `<home>/work/<slug>/`. A link that fails
 with the reason as it came, and you go on with the next: one link never
 stops the batch.
 
+If two YouTube or Instagram links in a row fail with anything but a private,
+deleted or blocked video, yt-dlp has probably fallen behind the site. Once per
+batch, tell the user in one line, run `yt_dlp_update` from `doctor.py`, and try
+those links again. What still fails goes to the report.
+
 ### A YouTube video
 
 ```bash
@@ -136,8 +165,13 @@ where the spoken words come from:
   python3 <scripts>/transcribe.py subtitles subs.<lang>.vtt transcript.txt
   ```
 
-- `whisper <lang>`: no subtitles. Download the audio and transcribe it (the
-  first time, Whisper downloads its model, about 480 MB):
+- `whisper <lang>`: no subtitles, so Whisper has to transcribe the audio. If
+  `commands.python` is null, it isn't installed yet. Tell the user in one line
+  that this video has no subtitles and that you are installing Whisper (about
+  480 MB with its model, in `<home>/.venv`), run `whisper_steps` one by one as
+  in step 1, and run `doctor.py` again to get `<venv python>`. If it can't be
+  installed, the links that need it go to the report and you go on with the
+  rest. Then download the audio and transcribe it:
 
   ```bash
   <yt-dlp> <yt_dlp_args> --no-progress -f "ba[ext=m4a]/ba" -o "audio.%(ext)s" "$URL"
@@ -274,16 +308,19 @@ From a page: the Recipe's `image` (the largest), then `og:image`. Download it
 the three rules. If no frame and no image meets them, the recipe goes
 without `photo`: say so in the report.
 
-Done when `<home>/work/batch/photos/<slug>.jpg` meets the three rules, or
-the recipe has no photo.
-
-## 6. The batch
-
-Put every recipe in `<home>/work/batch/recipes.json`:
+Now add the recipe to `<home>/work/batch/recipes.json`, with its `photo`, without
+waiting for the other links: a batch cut short keeps what it did.
 
 ```json
 { "version": 1, "recipes": [ … ] }
 ```
+
+Done when `<home>/work/batch/photos/<slug>.jpg` meets the three rules, or
+the recipe has no photo, and the recipe is in `recipes.json`.
+
+## 6. The batch
+
+`recipes.json` has every recipe by now. Pack it:
 
 ```bash
 python3 <scripts>/batch.py pack <home>/work/batch
@@ -354,7 +391,11 @@ python3 <scripts>/links.py record no-recipe <url> …          # nothing to take
 ```
 
 A link that failed to download is not recorded: next time it is tried again.
-Delete `<home>/work/`; the batch and the record stay.
+Then delete the work folder; the batch and the record stay:
+
+```bash
+python3 <scripts>/work.py clean
+```
 
 Then do what they chose, and tell them how it reaches the phone:
 

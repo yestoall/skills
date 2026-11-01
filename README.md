@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [Léelo en español](README.es.md)
 
-Version 0.5.0
+Version 0.6.0
 
 ## nevera-recipes
 
@@ -26,6 +26,8 @@ its steps and a photo of the finished dish.
   `~/Downloads/nevera/`, so you can give it the same list twice.
 - **What failed, and why**: a private video, a page that doesn't answer, a
   link without a recipe. One link never stops the rest.
+- **A batch cut short isn't lost**: next time, it tells you what it left and
+  asks whether to continue it or start over.
 - **You review before sending**: it lists the recipes and writes them to a text
   file you can read and change in any editor, or just tell your AI what to fix.
 
@@ -65,10 +67,12 @@ Ask your AI in your own words, and paste the links or name a file with them:
 > Make me a Nevera batch with these: https://youtu.be/… https://www.…
 
 The first time, the skill installs what it needs and tells you before it
-does: `yt-dlp` (downloads), `ffmpeg` (the photos), and Whisper
-(`faster-whisper`, about 480 MB with its model) in a folder of its own,
-`~/Downloads/nevera/.venv`. It uses Homebrew on a Mac, winget on Windows, and
-apt on Linux. On a Mac, macOS asks once to let your terminal into Downloads.
+does: `yt-dlp` (downloads) and `ffmpeg` (the photos). Whisper (`faster-whisper`,
+about 480 MB with its model) only goes in when a video has no subtitles, in a
+folder of its own, `~/Downloads/nevera/.venv`. It uses Homebrew on a Mac, winget
+on Windows, and apt on Linux. On a Mac, macOS asks once to let your terminal into
+Downloads. If `yt-dlp` falls behind YouTube, the skill updates it, and tells you
+first.
 
 Keep `~/Downloads/nevera/` when you clean up your Downloads: without it, the
 skill installs Whisper again and no longer knows which links it converted.

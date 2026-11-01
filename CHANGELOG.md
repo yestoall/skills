@@ -4,6 +4,20 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.6.0 · 2026-11-01
+
+- A batch cut short no longer leaks into the next one. `scripts/work.py status`
+  says what an earlier batch left, and the user chooses to continue it or start
+  over (`work.py clean`). Each recipe goes into `recipes.json` as soon as it is
+  done, so continuing keeps it.
+- Whisper installs only when a link needs it. `doctor.py` no longer counts it
+  towards `ready`: its commands are apart, in `whisper_steps`, and most links
+  never ask for them.
+- An old `yt-dlp` gets updated. `doctor.py` prints `yt_dlp_version`, `yt_dlp_old`
+  (over two months since its release) and `yt_dlp_update`, the command for the
+  way it was installed. The skill runs it when yt-dlp is old, and once per batch
+  when two links in a row fail for no reason of their own.
+
 ## 0.5.0 · 2026-11-01
 
 - The skill works in Downloads and no longer creates `~/Nevera/`. The batches

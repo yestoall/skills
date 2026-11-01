@@ -19,7 +19,7 @@ grep -q nevera-recipes /tmp/list.txt
 
 echo "== doctor: install steps"
 python3 "$S/doctor.py" > /tmp/doctor.json
-python3 -c "import json; [print(s) for s in json.load(open('/tmp/doctor.json'))['steps']]" > /tmp/steps.txt
+python3 -c "import json; d = json.load(open('/tmp/doctor.json')); [print(s) for s in d['steps'] + d['whisper_steps']]" > /tmp/steps.txt
 cat /tmp/steps.txt
 while IFS= read -r step; do
   # the deno installer asks before touching the shell profile

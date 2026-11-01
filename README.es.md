@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.5.0
+Versión 0.6.0
 
 ## nevera-recipes
 
@@ -26,6 +26,8 @@ ingredientes, sus pasos y una foto del plato terminado.
   así que puedes pasarle la misma lista dos veces.
 - **Lo que falló, y por qué**: un vídeo privado, una página que no responde, un
   enlace sin receta. Un enlace nunca para a los demás.
+- **Un Lote a medias no se pierde**: la próxima vez te dice qué dejó y te
+  pregunta si lo sigues o empiezas de cero.
 - **Lo revisas antes de enviarlo**: te lista las recetas y las deja en un fichero
   de texto que puedes leer y cambiar en cualquier editor, o dile a tu IA qué
   corregir.
@@ -69,10 +71,12 @@ están:
 > Hazme un Lote de Nevera con estos: https://youtu.be/… https://www.…
 
 La primera vez, la skill instala lo que le falta y te avisa antes: `yt-dlp` (las
-descargas), `ffmpeg` (las fotos) y Whisper (`faster-whisper`, unos 480 MB con
-su modelo) en una carpeta propia, `~/Downloads/nevera/.venv`. Usa Homebrew en un
-Mac, winget en Windows y apt en Linux. En un Mac, macOS te pide una vez permiso
-para que tu terminal entre en Descargas.
+descargas) y `ffmpeg` (las fotos). Whisper (`faster-whisper`, unos 480 MB con su
+modelo) solo se instala cuando un vídeo no tiene subtítulos, en una carpeta
+propia, `~/Downloads/nevera/.venv`. Usa Homebrew en un Mac, winget en Windows y
+apt en Linux. En un Mac, macOS te pide una vez permiso para que tu terminal entre
+en Descargas. Si `yt-dlp` se queda atrás con YouTube, la skill lo actualiza y te
+avisa antes.
 
 Conserva `~/Downloads/nevera/` cuando limpies Descargas: sin ella, la skill vuelve
 a instalar Whisper y ya no sabe qué enlaces convirtió.

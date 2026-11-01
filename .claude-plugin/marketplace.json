@@ -11,7 +11,7 @@
       "name": "nevera",
       "source": "./plugins/nevera",
       "description": "Turn YouTube cooking videos, Instagram reels and posts, and recipe web pages into a recipe batch with photos that opens in Nevera.",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "category": "productivity",
       "homepage": "https://www.yestoall.com/skills#nevera-recipes"
     }

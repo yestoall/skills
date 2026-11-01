@@ -10,21 +10,29 @@ It installs nothing itself: the steps are run one by one, where the Chef can
 see them.
 
   - macOS: Homebrew (yt-dlp brings Deno, the JavaScript runtime YouTube needs).
-  - Windows: winget (yt-dlp.yt-dlp, Gyan.FFmpeg, DenoLand.Deno, Python).
+  - Windows: winget (yt-dlp.yt-dlp, Gyan.FFmpeg, DenoLand.Deno).
   - Linux: apt for ffmpeg, and yt-dlp from pip inside the venv, because the
     apt package falls behind YouTube within weeks.
 
-Whisper is faster-whisper, in a venv of its own at ~/Downloads/nevera/.venv
-(NEVERA_HOME overrides ~/Downloads/nevera), never in the system's Python. It
-needs a Python between 3.9 and 3.14: 3.15 has no wheels yet for PyAV, one of
-its dependencies.
+Whisper is apart, in `whisper_steps`, because most links never need it and it
+weighs about 480 MB with its model: they are run when a link first asks for
+it, and `commands.python` stays null until then. It is faster-whisper, in a
+venv of its own at ~/Downloads/nevera/.venv (NEVERA_HOME overrides
+~/Downloads/nevera), never in the system's Python. It needs a Python between
+3.9 and 3.14: 3.15 has no wheels yet for PyAV, one of its dependencies.
+
+`yt_dlp_version`, `yt_dlp_old` and `yt_dlp_update` are there because YouTube
+breaks an old yt-dlp: old is more than two months since its release, and the
+update is the command for the way this one was installed.
 
 Standard library only: it runs with any Python 3.9+.
 """
 
 from __future__ import annotations
 
+import datetime as _dt
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -35,6 +43,7 @@ from machine import nevera_home, this_system
 
 PYTHON_RANGE = ((3, 9), (3, 14))
 TOOLS = ("yt-dlp", "ffmpeg", "ffprobe", "deno", "node")
+OLD_AFTER_DAYS = 60
 
 
 def pick_python(found: dict) -> Optional[str]:
@@ -52,18 +61,18 @@ def plan(
     system: str,
     tools: dict,
     python: Optional[str],
-    whisper: bool,
     venv: str,
+    venv_exists: bool = False,
     has_brew: bool = True,
     has_apt: bool = True,
 ) -> list:
-    """The install commands still missing. `tools` maps a tool to its path
-    (missing or None when it is not there); `python` is a usable Python for
-    the venv; `whisper` says whether the venv already has faster-whisper."""
+    """The install commands still missing to download and to cut a photo.
+    `tools` maps a tool to its path (missing or None when it is not there);
+    `python` is a usable Python for the venv, the only way yt-dlp goes in on
+    Linux."""
     has = lambda tool: bool(tools.get(tool))  # noqa: E731
     js = has("deno") or has("node")
     steps: list = []
-    pip_extra = ""
 
     if system == "macos":
         if not has_brew:
@@ -76,9 +85,6 @@ def plan(
             steps.append("brew install deno")
         if not (has("ffmpeg") and has("ffprobe")):
             steps.append("brew install ffmpeg")
-        if not python and not whisper:
-            steps.append("brew install python@3.12")
-            python = "python3.12"
     elif system == "windows":
         if not has("yt-dlp"):
             steps.append("winget install --id yt-dlp.yt-dlp -e")
@@ -86,37 +92,104 @@ def plan(
             steps.append("winget install --id Gyan.FFmpeg -e")
         if not js:
             steps.append("winget install --id DenoLand.Deno -e")
-        if not python and not whisper:
-            steps.append("winget install --id Python.Python.3.12 -e")
-            python = "py -3.12"
     else:
+        new_venv = not has("yt-dlp") and not venv_exists
         apt = []
         if not (has("ffmpeg") and has("ffprobe")):
             apt.append("ffmpeg")
-        if not whisper:
-            # el python3 de Debian no trae el módulo venv sin python3-venv
-            if not python:
-                apt.append("python3")
-                python = "python3"
-            apt.append("python3-venv")
+        if new_venv:
+            python, packages = _venv_packages(python)
+            apt += packages
         if apt:
-            # un Debian recién instalado no tiene listas de paquetes
-            steps.append(
-                f"sudo apt-get update && sudo apt-get install -y {' '.join(apt)}"
-                if has_apt
-                else f"Install {', '.join(apt)} with your package manager"
-            )
+            steps.append(_apt_step(apt, has_apt))
         if not js:
             steps.append("curl -fsSL https://deno.land/install.sh | sh")
-        if not has("yt-dlp"):
-            pip_extra = ' "yt-dlp[default]"'
-
-    if not whisper or pip_extra:
-        if not whisper:
+        if new_venv:
             steps.append(f"{python} -m venv {venv}")
-        packages = ("faster-whisper" if not whisper else "") + pip_extra
-        steps.append(f"{venv_python(system, venv)} -m pip install {packages.strip()}")
+        if not has("yt-dlp"):
+            steps.append(f'{venv_python(system, venv)} -m pip install "yt-dlp[default]"')
     return steps
+
+
+def whisper_plan(
+    system: str,
+    python: Optional[str],
+    venv: str,
+    venv_exists: bool = False,
+    has_apt: bool = True,
+) -> list:
+    """The install commands for Whisper, for when a link asks for it."""
+    steps: list = []
+    if not venv_exists:
+        if system == "macos" and not python:
+            steps.append("brew install python@3.12")
+            python = "python3.12"
+        elif system == "windows" and not python:
+            steps.append("winget install --id Python.Python.3.12 -e")
+            python = "py -3.12"
+        elif system == "linux":
+            python, packages = _venv_packages(python)
+            steps.append(_apt_step(packages, has_apt))
+        steps.append(f"{python} -m venv {venv}")
+    steps.append(f"{venv_python(system, venv)} -m pip install faster-whisper")
+    return steps
+
+
+def _venv_packages(python: Optional[str]) -> tuple:
+    # el python3 de Debian no trae el módulo venv sin python3-venv
+    if python:
+        return python, ["python3-venv"]
+    return "python3", ["python3", "python3-venv"]
+
+
+def _apt_step(packages: list, has_apt: bool) -> str:
+    # un Debian recién instalado no tiene listas de paquetes
+    if has_apt:
+        return f"sudo apt-get update && sudo apt-get install -y {' '.join(packages)}"
+    return f"Install {', '.join(packages)} with your package manager"
+
+
+#- an old yt-dlp -
+
+
+def version_age(version: Optional[str], today: _dt.date) -> Optional[int]:
+    """Days since a yt-dlp release, whose version is its date (2026.10.22)."""
+    match = re.match(r"(\d{4})\.(\d{1,2})\.(\d{1,2})", version or "")
+    if not match:
+        return None
+    try:
+        return (today - _dt.date(*map(int, match.groups()))).days
+    except ValueError:
+        return None
+
+
+def is_old(age: Optional[int]) -> bool:
+    return age is not None and age > OLD_AFTER_DAYS
+
+
+def update_command(system: str, path: Optional[str], venv: str) -> Optional[str]:
+    """How to update this yt-dlp: each way of installing it has its own, and
+    `yt-dlp -U` only works on the standalone binary."""
+    if not path:
+        return None
+    if path.startswith(venv):
+        return f'{venv_python(system, venv)} -m pip install -U "yt-dlp[default]"'
+    if system == "windows":
+        return "winget upgrade --id yt-dlp.yt-dlp -e"
+    if system == "macos" and ("/Cellar/" in path or "/homebrew/" in path):
+        return "brew upgrade yt-dlp"
+    return f"{path} -U"
+
+
+def _yt_dlp_version(path: Optional[str]) -> Optional[str]:
+    if not path:
+        return None
+    try:
+        return subprocess.run(
+            [path, "--version"], capture_output=True, text=True, timeout=20
+        ).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        return None
 
 
 #- what is on this machine -
@@ -162,15 +235,26 @@ def check() -> dict:
             == 0
         )
     python = pick_python(_pythons())
+    has_apt = bool(shutil.which("apt-get"))
     steps = plan(
         system,
         tools,
         python,
-        whisper,
         venv=str(venv),
+        venv_exists=venv_py.exists(),
         has_brew=bool(shutil.which("brew")),
-        has_apt=bool(shutil.which("apt-get")),
+        has_apt=has_apt,
     )
+    whisper_steps = (
+        []
+        if whisper
+        else whisper_plan(
+            system, python, str(venv), venv_exists=venv_py.exists(), has_apt=has_apt
+        )
+    )
+    yt_dlp_version = _yt_dlp_version(tools["yt-dlp"])
+    # brew's bin/ is a symlink: its real path says who installed it
+    yt_dlp_path = str(Path(tools["yt-dlp"]).resolve()) if tools["yt-dlp"] else None
     # yt-dlp only turns Deno on by itself; Node has to be asked for
     yt_dlp_args = ["--js-runtimes", "node"] if not tools["deno"] and tools["node"] else []
     return {
@@ -184,7 +268,11 @@ def check() -> dict:
             "python": str(venv_py) if whisper else None,
         },
         "yt_dlp_args": yt_dlp_args,
+        "yt_dlp_version": yt_dlp_version,
+        "yt_dlp_old": is_old(version_age(yt_dlp_version, _dt.date.today())),
+        "yt_dlp_update": update_command(system, yt_dlp_path, str(venv.resolve())),
         "steps": steps,
+        "whisper_steps": whisper_steps,
         "ready": not steps,
     }
 
