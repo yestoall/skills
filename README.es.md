@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.4.0
+Versión 0.5.0
 
 ## nevera-recipes
 
@@ -22,7 +22,7 @@ ingredientes, sus pasos y una foto del plato terminado.
   no la lleva, su texto.
 - **Una foto por receta**: un fotograma del plato terminado, recortado en
   cuadrado, sin títulos ni marcas de agua. De una web, su propia foto.
-- **Se salta los enlaces que ya convirtió**: guarda un registro en `~/Nevera/`,
+- **Se salta los enlaces que ya convirtió**: guarda un registro en `~/Downloads/nevera/`,
   así que puedes pasarle la misma lista dos veces.
 - **Lo que falló, y por qué**: un vídeo privado, una página que no responde, un
   enlace sin receta. Un enlace nunca para a los demás.
@@ -70,10 +70,14 @@ están:
 
 La primera vez, la skill instala lo que le falta y te avisa antes: `yt-dlp` (las
 descargas), `ffmpeg` (las fotos) y Whisper (`faster-whisper`, unos 480 MB con
-su modelo) en una carpeta propia, `~/Nevera/.venv`. Usa Homebrew en un Mac,
-winget en Windows y apt en Linux.
+su modelo) en una carpeta propia, `~/Downloads/nevera/.venv`. Usa Homebrew en un
+Mac, winget en Windows y apt en Linux. En un Mac, macOS te pide una vez permiso
+para que tu terminal entre en Descargas.
 
-Al terminar te da la ruta del Lote, `~/Nevera/nevera-lote-AAAA-MM-DD.zip`. En un
+Conserva `~/Downloads/nevera/` cuando limpies Descargas: sin ella, la skill vuelve
+a instalar Whisper y ya no sabe qué enlaces convirtió.
+
+Al terminar te da la ruta del Lote, `~/Downloads/nevera-lote-AAAA-MM-DD.zip`. En un
 Mac te pregunta cómo quieres pasarlo al teléfono: lo copia a iCloud Drive, o te
 enseña el fichero en el Finder para que hagas clic derecho → **Compartir** →
 **AirDrop**. Desde otro ordenador, usa Quick Share, iCloud Drive, Google Drive o

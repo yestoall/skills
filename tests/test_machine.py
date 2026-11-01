@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from machine import nevera_home, this_system
+from machine import batches_folder, downloads_folder, nevera_home, this_system
 
 
 class System(unittest.TestCase):
@@ -23,15 +23,41 @@ class System(unittest.TestCase):
         self.assertEqual(this_system("FreeBSD"), "linux")
 
 
-class Home(unittest.TestCase):
-    def test_it_is_nevera_in_the_home_folder(self):
-        with mock.patch.dict(os.environ, {}, clear=False):
-            os.environ.pop("NEVERA_HOME", None)
-            self.assertEqual(nevera_home(), Path.home() / "Nevera")
+class Downloads(unittest.TestCase):
+    def test_it_is_the_downloads_folder_on_a_mac_and_on_windows(self):
+        for system in ("macos", "windows"):
+            with self.subTest(system):
+                self.assertEqual(downloads_folder(system), Path.home() / "Downloads")
 
-    def test_nevera_home_overrides_it(self):
+    def test_a_linux_in_another_language_names_its_own(self):
+        found = lambda: "/home/ana/Descargas"
+        self.assertEqual(downloads_folder("linux", found), Path("/home/ana/Descargas"))
+
+    def test_a_linux_that_names_none_gets_the_usual_one(self):
+        # with nothing set, xdg-user-dir answers with the home folder itself
+        for found in (lambda: None, lambda: str(Path.home())):
+            self.assertEqual(downloads_folder("linux", found), Path.home() / "Downloads")
+
+
+class Home(unittest.TestCase):
+    def without_override(self):
+        patcher = mock.patch.dict(os.environ)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        os.environ.pop("NEVERA_HOME", None)
+
+    def test_the_skills_own_things_are_in_a_folder_inside_downloads(self):
+        self.without_override()
+        self.assertEqual(nevera_home(), downloads_folder() / "nevera")
+
+    def test_the_batches_are_in_downloads_itself(self):
+        self.without_override()
+        self.assertEqual(batches_folder(), downloads_folder())
+
+    def test_nevera_home_overrides_both(self):
         with mock.patch.dict(os.environ, {"NEVERA_HOME": "/tmp/elsewhere"}):
             self.assertEqual(nevera_home(), Path("/tmp/elsewhere"))
+            self.assertEqual(batches_folder(), Path("/tmp/elsewhere"))
 
 
 if __name__ == "__main__":

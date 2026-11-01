@@ -14,10 +14,10 @@ see them.
   - Linux: apt for ffmpeg, and yt-dlp from pip inside the venv, because the
     apt package falls behind YouTube within weeks.
 
-Whisper is faster-whisper, in a venv of its own at ~/Nevera/.venv
-(NEVERA_HOME overrides ~/Nevera), never in the system's Python. It needs a
-Python between 3.9 and 3.14: 3.15 has no wheels yet for PyAV, one of its
-dependencies.
+Whisper is faster-whisper, in a venv of its own at ~/Downloads/nevera/.venv
+(NEVERA_HOME overrides ~/Downloads/nevera), never in the system's Python. It
+needs a Python between 3.9 and 3.14: 3.15 has no wheels yet for PyAV, one of
+its dependencies.
 
 Standard library only: it runs with any Python 3.9+.
 """

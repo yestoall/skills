@@ -15,7 +15,7 @@ when there are none (the language may be `auto`, unknown).
 in). It runs with any Python 3.9+.
 
 `whisper` transcribes with faster-whisper, so it has to run with the Python
-of the venv (~/Nevera/.venv) that doctor.py sets up. The model is `small` by
+of the venv (~/Downloads/nevera/.venv) that doctor.py sets up. The model is `small` by
 default; `medium` is slower and hears better. The first run downloads the
 model (about 480 MB for small) into the Hugging Face cache. Without
 --language it detects it, and prints what it detected.

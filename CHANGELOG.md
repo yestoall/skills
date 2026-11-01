@@ -4,6 +4,18 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.5.0 · 2026-11-01
+
+- The skill works in Downloads and no longer creates `~/Nevera/`. The batches
+  go straight into `~/Downloads`; the work folder, `converted.tsv` and the venv
+  go into `~/Downloads/nevera/`. On a Linux in another language, Downloads is
+  the folder `xdg-user-dir` names (`~/Descargas`). On a Mac, macOS asks once to
+  let the terminal in.
+- Nothing moves on its own: a `~/Nevera/` from an earlier version stays where
+  it is, unused. To keep the record of converted links, move its
+  `converted.tsv` to `~/Downloads/nevera/`. The venv doesn't survive a move:
+  the skill installs it again.
+
 ## 0.4.0 · 2026-11-01
 
 - The skill stops for a review before sending the batch: it lists the recipes

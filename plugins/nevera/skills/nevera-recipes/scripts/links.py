@@ -10,10 +10,9 @@ Every link is known by its identity, the same rule Nevera uses
 in many URL shapes (`?si=`, `youtu.be`, `/shorts/`, `?igsh=`, `/reel/` or
 `/p/`); its identity is one.
 
-The record lives in ~/Nevera/converted.tsv (NEVERA_HOME overrides the
-folder): one line per link, `identity<TAB>date<TAB>status<TAB>url`. It sits
-next to the batches and not in the skill's folder, which every update of the
-package overwrites.
+The record lives in ~/Downloads/nevera/converted.tsv (NEVERA_HOME overrides
+the folder): one line per link, `identity<TAB>date<TAB>status<TAB>url`. It is
+not in the skill's folder, which every update of the package overwrites.
 
 Standard library only: it runs with any Python 3.9+.
 """
@@ -104,7 +103,7 @@ STATUSES = ("recipe", "no-recipe")
 
 
 class Record:
-    """~/Nevera/converted.tsv: identity, date, status and URL of each link
+    """Downloads/nevera/converted.tsv: identity, date, status and URL of each link
     already converted. `recipe` went into a delivered batch; `no-recipe` had
     no recipe to take. A link that failed to download is never recorded, so
     the next run tries it again."""

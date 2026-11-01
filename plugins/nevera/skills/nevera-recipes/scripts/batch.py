@@ -29,7 +29,6 @@ from __future__ import annotations
 import datetime as _dt
 import io
 import json
-import os
 import re
 import struct
 import subprocess
@@ -39,7 +38,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional, Union
 
-from machine import open_command, this_system
+from machine import batches_folder, open_command, this_system
 
 VERSION = 1
 RECIPES_JSON = "recipes.json"
@@ -457,8 +456,7 @@ def main(argv: list) -> int:
         print(report.text())
         return 0 if report.ok else 1
     if len(argv) >= 2 and argv[0] == "pack":
-        home = Path(os.environ.get("NEVERA_HOME") or Path.home() / "Nevera")
-        out = Path(argv[2]) if len(argv) >= 3 else default_output(home)
+        out = Path(argv[2]) if len(argv) >= 3 else default_output(batches_folder())
         report = pack(argv[1], out)
         print(report.text())
         if report.ok:

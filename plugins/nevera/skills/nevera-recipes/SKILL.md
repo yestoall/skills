@@ -23,11 +23,13 @@ that is not the recipe.
 
 `scripts/` sits next to this file. In the commands below, `<scripts>` is its
 full path: write it out every time, since the commands run from
-`~/Nevera/work/`, not from here. The scripts need only a plain Python 3.9+
+`<home>/work/`, not from here. The scripts need only a plain Python 3.9+
 (`python3`; on Windows, `python`), except `transcribe.py whisper`, which
-runs with the venv's Python. Everything the skill keeps lives in `~/Nevera/`:
-the batches, `converted.tsv` (the record of links already done) and `.venv`.
-Work in `~/Nevera/work/`, one folder per link named by its `slug`.
+runs with the venv's Python. The finished batches go straight into the user's
+Downloads folder. Everything else lives in `<home>`, the folder `doctor.py`
+prints as `home` (`~/Downloads/nevera`, unless Linux calls Downloads something
+else): `converted.tsv` (the record of links already done) and `.venv`. Work in
+`<home>/work/`, one folder per link named by its `slug`.
 
 ## 1. The machine
 
@@ -38,10 +40,15 @@ python3 <scripts>/doctor.py
 It prints what is installed and `steps`: the commands still missing for this
 system, in order. With steps, tell the user in one line what you are about
 to install and why (yt-dlp downloads, ffmpeg cuts the photo, Whisper
-transcribes videos without subtitles, in its own folder at `~/Nevera/.venv`),
+transcribes videos without subtitles, in its own folder at `<home>/.venv`),
 then run them one by one. A step that needs the user (installing Homebrew, a
 `sudo` password) goes to them as it is written. Run `doctor.py` again until
 `ready` is true.
+
+On a Mac, the first time something touches Downloads, macOS asks to let the
+terminal in. Tell the user to allow it. If it was refused, you get `Operation
+not permitted`, and it is turned on in System Settings → Privacy & Security →
+Files & Folders.
 
 From here on, call yt-dlp, ffmpeg, ffprobe and the venv's Python by the
 paths in `commands`: `<yt-dlp>`, `<ffmpeg>`, `<ffprobe>` and
@@ -53,10 +60,10 @@ Done when `doctor.py` says `"ready": true`.
 ## 2. The links
 
 The user pastes links in the chat or names a file (Nevera's "Copy links"
-gives one per line). Save what they pasted to `~/Nevera/work/links.txt`, then:
+gives one per line). Save what they pasted to `<home>/work/links.txt`, then:
 
 ```bash
-python3 <scripts>/links.py pending ~/Nevera/work/links.txt
+python3 <scripts>/links.py pending <home>/work/links.txt
 ```
 
 It gives every link once (a video shared as `youtu.be/…?si=` and as
@@ -73,7 +80,7 @@ It gives every link once (a video shared as `youtu.be/…?si=` and as
 **Instagram first**, before you start on any link: Instagram shows some
 posts only to signed-in accounts, and the user decides whether you may use
 their browser's session for those. Fetch what anyone can see, for every
-Instagram link, each in its own `~/Nevera/work/<slug>/`:
+Instagram link, each in its own `<home>/work/<slug>/`:
 
 ```bash
 python3 <scripts>/instagram.py meta "$URL" meta.json --yt-dlp <yt-dlp> <yt_dlp_args>
@@ -105,7 +112,7 @@ Done when the user knows which links you will do.
 
 ## 3. Each link: the sources
 
-Go link by link, steps 3 to 5, in `~/Nevera/work/<slug>/`. A link that fails
+Go link by link, steps 3 to 5, in `<home>/work/<slug>/`. A link that fails
 (a private or deleted video, a page that does not answer) goes to the report
 with the reason as it came, and you go on with the next: one link never
 stops the batch.
@@ -267,22 +274,22 @@ From a page: the Recipe's `image` (the largest), then `og:image`. Download it
 the three rules. If no frame and no image meets them, the recipe goes
 without `photo`: say so in the report.
 
-Done when `~/Nevera/work/batch/photos/<slug>.jpg` meets the three rules, or
+Done when `<home>/work/batch/photos/<slug>.jpg` meets the three rules, or
 the recipe has no photo.
 
 ## 6. The batch
 
-Put every recipe in `~/Nevera/work/batch/recipes.json`:
+Put every recipe in `<home>/work/batch/recipes.json`:
 
 ```json
 { "version": 1, "recipes": [ … ] }
 ```
 
 ```bash
-python3 <scripts>/batch.py pack ~/Nevera/work/batch
+python3 <scripts>/batch.py pack <home>/work/batch
 ```
 
-It checks the batch and writes `~/Nevera/nevera-lote-YYYY-MM-DD.zip` (with
+It checks the batch and writes `nevera-lote-YYYY-MM-DD.zip` in Downloads (with
 `-2`, `-3`… if that day already has one), with only the photos the recipes
 use. On an error it writes nothing: fix what it names and run it again.
 Read its warnings too: each one is something Nevera would do on its own.
@@ -302,10 +309,10 @@ Write the preview, in the user's language (`es`; anything else gets English
 headings):
 
 ```bash
-python3 <scripts>/batch.py preview ~/Nevera/work/batch es
+python3 <scripts>/batch.py preview <home>/work/batch es
 ```
 
-It writes `~/Nevera/work/batch/review.md`: every recipe in plain text. Then tell
+It writes `<home>/work/batch/review.md`: every recipe in plain text. Then tell
 the user, short:
 
 - each recipe: name, where it came from, how many ingredients and steps it has,
@@ -318,7 +325,7 @@ the user, short:
   unrecognized ones;
 - the path of `review.md`, which they can read and change in any text editor.
   If they want it opened, add `--open` to the command above. The photos are in
-  `~/Nevera/work/batch/photos/`.
+  `<home>/work/batch/photos/`.
 
 Then ask one question, with the ways to send it from step 8 plus **Change
 something**, so that whoever doesn't want to review takes no extra step.
@@ -330,7 +337,7 @@ it is `recipes.json` that gets packed, never `review.md`. Then pack again over
 the same `.zip`, write the preview again and repeat the list:
 
 ```bash
-python3 <scripts>/batch.py pack ~/Nevera/work/batch <batch.zip>
+python3 <scripts>/batch.py pack <home>/work/batch <batch.zip>
 ```
 
 Done when the user has chosen how to send it, or that it stays where it is.
@@ -347,7 +354,7 @@ python3 <scripts>/links.py record no-recipe <url> …          # nothing to take
 ```
 
 A link that failed to download is not recorded: next time it is tried again.
-Delete `~/Nevera/work/`; the batch and the record stay.
+Delete `<home>/work/`; the batch and the record stay.
 
 Then do what they chose, and tell them how it reaches the phone:
 
@@ -357,7 +364,7 @@ Then do what they chose, and tell them how it reaches the phone:
     - iCloud Drive: `python3 <scripts>/deliver.py icloud <batch.zip>` copies
       it to a Nevera folder in iCloud Drive, and it shows up in the Files app
       on the iPhone (in a moment, or more if the connection is slow). The
-      `.zip` stays in `~/Nevera/` too;
+      `.zip` stays in Downloads too;
     - AirDrop: `python3 <scripts>/deliver.py airdrop <batch.zip>` shows the
       file in the Finder. Tell them to Control-click it and choose **Share** →
       **AirDrop** → their phone: a script can't send it by itself, and
@@ -365,8 +372,7 @@ Then do what they chose, and tell them how it reaches the phone:
       isn't there, AirDrop has to be on, for contacts or for everyone, with
       the screen unlocked. It doesn't ask which app opens the file: the
       iPhone saves it to Downloads, in the Files app;
-    - nothing: it stays in `~/Nevera/`, and they can send it however they
-      like;
+    - nothing: it stays in Downloads, and they can send it however they like;
   - Windows or Linux to Android: tell them Quick Share, Google Drive, or a USB
     cable to the Downloads folder;
   - to an iPhone from Windows or Linux: tell them iCloud Drive (on the web, at

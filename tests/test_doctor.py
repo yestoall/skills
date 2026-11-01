@@ -6,7 +6,7 @@ import unittest
 from doctor import pick_python, plan
 
 ALL = {"yt-dlp": "/x/yt-dlp", "ffmpeg": "/x/ffmpeg", "ffprobe": "/x/ffprobe", "deno": "/x/deno"}
-VENV = "~/Nevera/.venv"
+VENV = "~/Downloads/nevera/.venv"
 
 
 def steps(system, tools=ALL, python="/x/python3.12", whisper=True, **kw):
@@ -26,8 +26,8 @@ class Plan(unittest.TestCase):
                 "brew install yt-dlp",
                 "brew install ffmpeg",
                 "brew install python@3.12",
-                "python3.12 -m venv ~/Nevera/.venv",
-                "~/Nevera/.venv/bin/python -m pip install faster-whisper",
+                "python3.12 -m venv ~/Downloads/nevera/.venv",
+                "~/Downloads/nevera/.venv/bin/python -m pip install faster-whisper",
             ],
         )
 
@@ -42,8 +42,8 @@ class Plan(unittest.TestCase):
                 "winget install --id Gyan.FFmpeg -e",
                 "winget install --id DenoLand.Deno -e",
                 "winget install --id Python.Python.3.12 -e",
-                "py -3.12 -m venv ~/Nevera/.venv",
-                "~/Nevera/.venv/Scripts/python -m pip install faster-whisper",
+                "py -3.12 -m venv ~/Downloads/nevera/.venv",
+                "~/Downloads/nevera/.venv/Scripts/python -m pip install faster-whisper",
             ],
         )
 
@@ -55,8 +55,8 @@ class Plan(unittest.TestCase):
                 # a fresh Debian has no package lists, and its python3 lacks
                 # the venv module until python3-venv is in (seen in Docker)
                 "sudo apt-get update && sudo apt-get install -y ffmpeg python3-venv",
-                "/usr/bin/python3 -m venv ~/Nevera/.venv",
-                '~/Nevera/.venv/bin/python -m pip install faster-whisper "yt-dlp[default]"',
+                "/usr/bin/python3 -m venv ~/Downloads/nevera/.venv",
+                '~/Downloads/nevera/.venv/bin/python -m pip install faster-whisper "yt-dlp[default]"',
             ],
         )
 
