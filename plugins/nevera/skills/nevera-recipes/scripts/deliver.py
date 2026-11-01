@@ -2,12 +2,13 @@
 """Gets the batch closer to the phone, from a Mac, when the user asks.
 
     python3 deliver.py icloud <batch.zip>    copy it to iCloud Drive/Nevera
-    python3 deliver.py airdrop <batch.zip>   open the AirDrop window and show
-                                             the file in the Finder
+    python3 deliver.py airdrop <batch.zip>   show the file in the Finder, ready
+                                             to share with AirDrop
 
 A script can't start AirDrop by itself: on macOS 27, AppKit offers no sharing
-service for a file from a script, a binary or a small app. So the user drags
-the file onto their phone.
+service for a file from a script, a binary or a small app. Dragging the file
+onto the AirDrop window starts no send there either, even with the phone in
+sight, so the user shares it from the Finder: Control-click, Share, AirDrop.
 
 Standard library only: it runs with any Python 3.9+.
 """
@@ -23,7 +24,6 @@ from typing import List
 from machine import this_system
 
 ICLOUD_DRIVE = "Library/Mobile Documents/com~apple~CloudDocs"
-AIRDROP_APP = "/System/Library/CoreServices/Finder.app/Contents/Applications/AirDrop.app"
 
 
 class DeliverError(Exception):
@@ -44,7 +44,7 @@ def send_to_icloud(batch: Path, home: Path) -> Path:
 
 
 def airdrop_commands(batch: Path) -> List[List[str]]:
-    return [["open", AIRDROP_APP], ["open", "-R", str(batch)]]
+    return [["open", "-R", str(batch)]]
 
 
 def main(argv: List[str]) -> int:

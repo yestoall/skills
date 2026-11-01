@@ -4,6 +4,14 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.3.1 · 2026-11-01
+
+- AirDrop from a Mac goes through the Finder: `deliver.py airdrop` shows the
+  file there, for Control-click → **Share** → **AirDrop**, and no longer opens
+  the AirDrop window. On macOS 27, dragging the file onto that window started
+  no send, even with the phone in sight, and sharing from the Finder worked
+  the first time.
+
 ## 0.3.0 · 2026-11-01
 
 - On a Mac, the skill asks how to send the batch to the phone when it's done.

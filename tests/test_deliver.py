@@ -1,5 +1,5 @@
 """Getting the batch to the phone from a Mac: a copy to iCloud Drive, or the
-AirDrop window with the file in front of the user."""
+file in the Finder, ready to share with AirDrop."""
 
 import tempfile
 import unittest
@@ -45,19 +45,12 @@ class ICloud(unittest.TestCase):
 
 
 class AirDrop(unittest.TestCase):
-    def test_it_opens_the_airdrop_window_and_shows_the_file_in_the_finder(self):
-        # A script can't start AirDrop: macOS offers it no sharing service, so
-        # the user drags the file onto their phone
-        commands = airdrop_commands(Path("/x/nevera-lote.zip"))
+    def test_it_shows_the_file_in_the_finder_and_nothing_else(self):
+        # A script can't start AirDrop, and dragging onto the AirDrop window
+        # starts no send on macOS 27: the user shares it from the Finder
         self.assertEqual(
-            commands,
-            [
-                [
-                    "open",
-                    "/System/Library/CoreServices/Finder.app/Contents/Applications/AirDrop.app",
-                ],
-                ["open", "-R", "/x/nevera-lote.zip"],
-            ],
+            airdrop_commands(Path("/x/nevera-lote.zip")),
+            [["open", "-R", "/x/nevera-lote.zip"]],
         )
 
 

@@ -316,9 +316,10 @@ Tell the user, short:
       it to a Nevera folder in iCloud Drive, and it shows up in the Files app
       on the iPhone (in a moment, or more if the connection is slow). The
       `.zip` stays in `~/Nevera/` too;
-    - AirDrop: `python3 <scripts>/deliver.py airdrop <batch.zip>` opens the
-      AirDrop window and shows the file in the Finder. Tell them to drag it
-      onto their phone: a script can't send it by itself. If their phone
+    - AirDrop: `python3 <scripts>/deliver.py airdrop <batch.zip>` shows the
+      file in the Finder. Tell them to Control-click it and choose **Share** →
+      **AirDrop** → their phone: a script can't send it by itself, and
+      dragging it onto the AirDrop window may start no send. If their phone
       isn't there, AirDrop has to be on, for contacts or for everyone, with
       the screen unlocked. It doesn't ask which app opens the file: the
       iPhone saves it to Downloads, in the Files app;
