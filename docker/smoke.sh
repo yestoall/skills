@@ -75,8 +75,8 @@ recipe = {
 }
 json.dump({"version": 1, "recipes": [recipe]}, open("batch/recipes.json", "w"), ensure_ascii=False)
 PY
-NEVERA_HOME="$W/Nevera" python3 "$S/lote.py" pack batch
-python3 "$S/lote.py" validate "$W"/Nevera/nevera-lote-*.zip
+NEVERA_HOME="$W/Nevera" python3 "$S/batch.py" pack batch
+python3 "$S/batch.py" validate "$W"/Nevera/nevera-lote-*.zip
 NEVERA_HOME="$W/Nevera" python3 "$S/links.py" record recipe "$URL"
 NEVERA_HOME="$W/Nevera" python3 "$S/links.py" pending links.txt
 

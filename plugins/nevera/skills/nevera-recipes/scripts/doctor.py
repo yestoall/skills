@@ -25,13 +25,13 @@ Standard library only: it runs with any Python 3.9+.
 from __future__ import annotations
 
 import json
-import os
-import platform
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
+
+from machine import nevera_home, this_system
 
 PYTHON_RANGE = ((3, 9), (3, 14))
 TOOLS = ("yt-dlp", "ffmpeg", "ffprobe", "deno", "node")
@@ -118,11 +118,6 @@ def plan(
 #- what is on this machine -
 
 
-def _system() -> str:
-    name = platform.system()
-    return {"Darwin": "macos", "Windows": "windows"}.get(name, "linux")
-
-
 def _pythons() -> dict:
     found = {}
     names = [f"python3.{minor}" for minor in range(9, 16)] + ["python3", "python"]
@@ -143,13 +138,9 @@ def _pythons() -> dict:
     return found
 
 
-def _home() -> Path:
-    return Path(os.environ.get("NEVERA_HOME") or Path.home() / "Nevera")
-
-
 def check() -> dict:
-    system = _system()
-    home = _home()
+    system = this_system()
+    home = nevera_home()
     venv = home / ".venv"
     venv_py = Path(venv_python(system, str(venv)))
     tools = {tool: shutil.which(tool) for tool in TOOLS}

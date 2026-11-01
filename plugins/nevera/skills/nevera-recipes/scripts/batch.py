@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Check and pack a Nevera recipe batch (format v1).
 
-    python3 lote.py validate FILE          # a .zip or a .json batch
-    python3 lote.py pack WORKDIR [OUT.zip] # WORKDIR/recipes.json + its photos
+    python3 batch.py validate FILE          # a .zip or a .json batch
+    python3 batch.py pack WORKDIR [OUT.zip] # WORKDIR/recipes.json + its photos
 
 A batch is a .zip with `recipes.json` and a `photos/` folder:
 

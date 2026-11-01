@@ -6,7 +6,7 @@ its own or ignores."""
 import unittest
 
 from tests.helpers import batch, jpeg, make_zip, png, recipe
-from lote import validate
+from batch import validate
 
 
 class AGoodBatch(unittest.TestCase):

@@ -4,6 +4,22 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.2.1 · 2026-11-01
+
+- The report says how to open the batch on an iPhone as it works today: in
+  the Files app, **Share** → Nevera. AirDrop does not ask which app opens a
+  file (since iOS 17 it goes to Downloads), and on recent iOS versions
+  Nevera is not in **Open With**.
+- Every command in `SKILL.md` names the script by its full path and calls
+  yt-dlp, ffmpeg and ffprobe by the paths `doctor.py` gives, with
+  `yt_dlp_args`.
+- `scripts/lote.py` is now `scripts/batch.py`. The `.zip` keeps its name,
+  `nevera-lote-YYYY-MM-DD.zip`.
+- `scripts/machine.py` holds what `doctor.py`, `links.py` and
+  `instagram.py` each had a copy of: the system and `~/Nevera`.
+- A test checks that `plugin.json`, `marketplace.json`, this changelog and
+  the README say the same version.
+
 ## 0.2.0 · 2026-11-01
 
 - Instagram reels and posts (`/p/`, `/reel/`, with or without `?igsh=`):

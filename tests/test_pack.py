@@ -8,7 +8,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from lote import default_output, pack, validate
+from batch import default_output, pack, validate
 from tests.helpers import batch, jpeg, recipe
 
 

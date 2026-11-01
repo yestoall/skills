@@ -34,6 +34,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from links import source_video
+from machine import this_system
 
 #- why a post failed -
 # yt-dlp's Instagram errors (2026.10). The checks go from the most to the
@@ -265,12 +266,6 @@ def fetch_meta(
 #- command line -
 
 
-def _this_system() -> str:
-    import platform
-
-    return {"Darwin": "macos", "Windows": "windows"}.get(platform.system(), "linux")
-
-
 def _option(args: list, name: str) -> tuple:
     """(value of --name, the args without it)."""
     if name in args:
@@ -301,7 +296,7 @@ def main(argv: list, run: Callable = subprocess.run) -> int:
     if command == "ask" and args:
         system, urls = _option(args, "--system")
         if urls:
-            print(permission_question(urls, system or _this_system()))
+            print(permission_question(urls, system or this_system()))
             return 0
     print(__doc__.split("\n\n")[1], file=sys.stderr)
     return 2

@@ -22,11 +22,12 @@ from __future__ import annotations
 
 import datetime as _dt
 import json
-import os
 import re
 import sys
 from pathlib import Path
 from typing import Iterable, Optional
+
+from machine import nevera_home
 
 #- identity -
 # Ported from Nevera (src/recipes/video.ts). Keep them identical: the inbox in
@@ -100,10 +101,6 @@ def urls_in(text: str) -> list[str]:
 #- the record of converted links -
 
 STATUSES = ("recipe", "no-recipe")
-
-
-def nevera_home() -> Path:
-    return Path(os.environ.get("NEVERA_HOME") or Path.home() / "Nevera")
 
 
 class Record:
