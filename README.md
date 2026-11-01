@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [En español, más abajo](#en-español)
 
-Version 0.1.0
+Version 0.2.0
 
 ## nevera-recipes
 
@@ -16,6 +16,8 @@ its steps and a photo of the finished dish.
 - **YouTube videos**: the recipe comes from the description and from what is
   said in the video. It uses the video's subtitles when there are any, and
   transcribes the audio with Whisper, on your computer, when there aren't.
+- **Instagram reels and posts**: the recipe comes from the post's text and
+  from what is said in the reel, transcribed with Whisper.
 - **Recipe web pages**: the recipe the page carries for search engines, or
   its text.
 - **A photo per recipe**: a frame of the finished dish, cropped square,
@@ -25,7 +27,18 @@ its steps and a photo of the finished dish.
 - **What failed, and why**: a private video, a page that doesn't answer, a
   link without a recipe. One link never stops the rest.
 
-Instagram reels are coming in a later version.
+### Instagram and your browser
+
+Instagram shows some posts only to signed-in accounts. The skill first gets
+what anyone can see. If a post needs a session, it asks you once for the
+whole batch: you choose whether it can use the Instagram session of a
+browser on your computer, and which one. `yt-dlp` reads that browser's
+cookies in memory, for those downloads only. They're never saved to a file
+and never leave your computer, and your password isn't needed. Say no, and
+those posts go to the report; the next batch tries them again.
+
+On a Mac, reading Safari's cookies needs Full Disk Access for your terminal,
+and Chrome, Brave and Edge ask once for their Keychain entry.
 
 ### Install
 
@@ -110,7 +123,7 @@ python3 -m unittest
 
 The tests use only the standard library. The skill lives in
 `plugins/nevera/skills/nevera-recipes/`: `SKILL.md` and its `scripts/`. Each
-version is a tag (`v0.1.0`), with its entry in `CHANGELOG.md` and its number
+version is a tag (`v0.2.0`), with its entry in `CHANGELOG.md` and its number
 in the plugin's `plugin.json`. The batch format has its own version
 (`"version": 1`), which only goes up when Nevera can read the new one and
 still reads the old.
@@ -120,13 +133,21 @@ still reads the old.
 Skills para la IA de tu ordenador, hechas para las apps de yestoall. Hoy,
 una: `nevera-recipes`, para [Nevera](https://www.yestoall.com/nevera).
 
-Dale a tu IA una lista de vídeos de cocina de YouTube y de webs de recetas, y
+Dale a tu IA una lista de vídeos de cocina de YouTube, reels y posts de
+Instagram y webs de recetas, y
 te devuelve un `.zip` que abres con Nevera en el teléfono: cada receta con
 sus ingredientes, sus pasos y una foto del plato terminado. Los subtítulos
 del vídeo, si los tiene; si no, transcribe el audio con Whisper, en tu
 ordenador. Recuerda los enlaces que ya hizo, para que puedas pasarle la misma
-lista dos veces, y te dice qué no pudo sacar y por qué. Los reels de
-Instagram llegan en una versión posterior.
+lista dos veces, y te dice qué no pudo sacar y por qué.
+
+Instagram enseña algunos posts solo a quien tiene la sesión abierta. La skill
+saca primero lo que ve cualquiera y, si un post pide sesión, te pregunta una
+vez por Lote si puede usar la de un navegador de tu ordenador, y cuál.
+`yt-dlp` lee sus cookies en memoria, solo para esas descargas: no se guardan
+en ningún fichero ni salen de tu ordenador, y no necesita tu contraseña. Si
+dices que no, esos posts van al informe y el siguiente Lote los vuelve a
+intentar.
 
 Instálala con Node 22 o más:
 

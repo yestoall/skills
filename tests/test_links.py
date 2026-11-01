@@ -108,6 +108,23 @@ class Pending(unittest.TestCase):
         self.assertEqual(result["done"], [])
         self.assertEqual(result["unrecognized"], [])
 
+    def test_an_instagram_post_or_reel_is_one_link_shared_any_way(self):
+        # a reel shared from the app brings ?igsh= (who shared it); the same
+        # post opened in a browser is /p/; both are one link to do
+        result = pending(
+            "https://www.instagram.com/reel/DdHvVqBoycU/?igsh=MWQ1ZGUxMzBkMA==\n"
+            "https://www.instagram.com/p/DdHvVqBoycU/\n"
+            "https://www.instagram.com/p/Ddlnn97ttK1",
+            self.record,
+        )
+        self.assertEqual(
+            [(link["kind"], link["identity"], link["slug"]) for link in result["pending"]],
+            [
+                ("instagram", "instagram:DdHvVqBoycU", "instagram-DdHvVqBoycU"),
+                ("instagram", "instagram:Ddlnn97ttK1", "instagram-Ddlnn97ttK1"),
+            ],
+        )
+
     def test_a_url_that_is_not_a_video_or_a_page_is_reported_not_dropped(self):
         result = pending(
             "https://www.instagram.com/chefeggplantt/\nhttps://www.youtube.com/@canal",

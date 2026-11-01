@@ -4,6 +4,26 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.2.0 · 2026-11-01
+
+- Instagram reels and posts (`/p/`, `/reel/`, with or without `?igsh=`):
+  the post's text, the reel transcribed with Whisper, and a frame of the
+  dish. A post with only photos gives its text and its own image.
+- It first gets what anyone can see. Posts that need a session wait for one
+  question per batch: whether to use the Instagram session of a browser on
+  the computer, and which. `yt-dlp` reads its cookies in memory with
+  `--cookies-from-browser`; they are never written to a file, and
+  `scripts/instagram.py` refuses `--cookies`. A no sends those posts to the
+  report, and the next batch tries them again.
+- Every Instagram failure has its reason in the report (a deleted or hidden
+  post, a private account, an age or region limit, a rate limit, a yt-dlp
+  too old for Instagram) and never stops the batch.
+- The recipe's `url` is the post without its share tracking; its identity
+  is the same as in Nevera.
+- The batch format does not change: still `"version": 1`.
+- Tested on macOS with public posts only, without cookies. The session path
+  is covered by tests, not yet run against a real browser.
+
 ## 0.1.0 · 2026-11-01
 
 First version, with one plugin, `nevera`, and its skill, `nevera-recipes`.

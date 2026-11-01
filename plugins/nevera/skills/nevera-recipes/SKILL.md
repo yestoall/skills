@@ -1,12 +1,13 @@
 ---
 name: nevera-recipes
-description: Turns YouTube cooking videos and recipe web pages into a recipe batch for the Nevera app (a .zip with one photo per recipe). Use when the user gives links to recipes they want in Nevera, or asks for a Nevera recipe batch.
+description: Turns YouTube cooking videos, Instagram reels and posts, and recipe web pages into a recipe batch for the Nevera app (a .zip with one photo per recipe). Use when the user gives links to recipes they want in Nevera, or asks for a Nevera recipe batch.
 license: MIT
 ---
 
 # Recipes for Nevera
 
-Take the links the user gives you (YouTube videos and recipe web pages),
+Take the links the user gives you (YouTube videos, Instagram reels and
+posts, and recipe web pages),
 write each recipe, pick a photo of the finished dish, and hand over one
 `.zip` the user opens with Nevera on their phone. That `.zip` is a **batch**,
 and its format is a contract Nevera reads: `scripts/lote.py` checks it before
@@ -67,8 +68,34 @@ It gives every link once (a video shared as `youtu.be/…?si=` and as
 - `unrecognized`: a profile, a channel, anything that is not a video or a
   page. Say so.
 
-Instagram is not supported in this version: list those links for the report
-and leave them out. Before starting, say how many links you will do. A video
+**Instagram first**, before you start on any link: Instagram shows some
+posts only to signed-in accounts, and the user decides whether you may use
+their browser's session for those. Fetch what anyone can see, for every
+Instagram link, each in its own `~/Nevera/work/<slug>/`:
+
+```bash
+python3 scripts/instagram.py meta "$URL" meta.json --yt-dlp <yt-dlp> <yt_dlp_args>
+```
+
+It prints JSON and exits 0 (got it), 3 (a session could get it) or 1 (it
+failed: the reason goes to the report). Never add `--browser` here.
+
+If any exited with 3, ask **once** for all of them, with the question
+`instagram.py ask <url> <url> …` prints (in the user's language): what the
+cookies are for, that nothing is kept, and which browser. Wait for the
+answer.
+
+- **Yes, and a browser**: run `meta` again for those links only, with
+  `--browser <name>`. What exits 1 now goes to the report with its reason.
+  The yes holds for this batch only: the next batch asks again.
+- **No**, or no answer: those links go to the report as "shown only to
+  signed-in accounts, skipped without your permission". Do not read any
+  browser's cookies, and do not ask again in this batch.
+
+Never pass `--cookies` (it writes the cookies to a file), and never copy,
+print or keep a browser's cookies anywhere.
+
+Before starting, say how many links you will do. A video
 longer than 30 minutes (`duration` in step 3) needs the user's OK: the recipe
 of a long video is often already in its description.
 
@@ -123,6 +150,30 @@ it:
 ffmpeg -v error -i video.mp4 -vf "fps=24/<duration>,scale=320:-1,tile=6x4" -frames:v 1 sheet.jpg
 ```
 
+### An Instagram post or reel
+
+`meta.json` is already in its folder (step 2), and `meta` printed what to go
+on with: `url` (the post without its share tracking; it goes in the recipe),
+`has_video` and `session_args`. Add `session_args` (the browser, when the
+user allowed a session) to **every** yt-dlp call for this post, next to the
+machine's `yt_dlp_args`.
+
+From `meta.json`: `description` is the post's text (often the ingredients,
+sometimes the whole recipe), `channel` the account (the author, as
+`@channel`; `uploader` is the person's name), `duration`. Reels rarely bring
+subtitles, so `pick` says `whisper auto`: download the audio and transcribe
+it as above, with `--language auto` (a reel can be in any language; Whisper
+says which it heard). yt-dlp warns "No CSRF token set by Instagram API": it
+is a warning, not a failure.
+
+- `has_video` false: a photo post. The recipe comes from the text alone,
+  and the photo from the post's own image (the largest in `thumbnails`).
+- A carousel comes as a playlist (`entries`): download only the item with
+  the video, `--playlist-items <n>`.
+- A download that fails after `meta` worked: run
+  `python3 scripts/instagram.py meta` again to get the reason for the
+  report.
+
 ### A web page
 
 ```bash
@@ -158,8 +209,10 @@ Write it as one object of the batch:
 
 - **Cross the sources.** The description or the page usually brings the
   ingredients and quantities; the video, the steps and the tricks.
-- `url`: the video's `webpage_url`, or the page's URL as the user gave it.
-  `author`: the channel, or the recipe's author, or the site's name.
+- `url`: the video's `webpage_url`; for Instagram, the `url` that
+  `instagram.py meta` printed; or the page's URL as the user gave it.
+  `author`: the channel, the Instagram account as `@account`, the recipe's
+  author, or the site's name.
 - Use only what the sources say: no invented ingredients, quantities or
   steps. If the ingredients or the steps are missing from all of them, the
   link has no recipe: say what is there and what is missing.
@@ -192,6 +245,14 @@ yt-dlp --no-progress -f "bv*[height<=1080][ext=mp4]/bv*[height<=1080]/b" -o "vid
 ffmpeg -v error -ss <start> -t <seconds> -i video.mp4 -vf "fps=1,scale=320:-1,tile=4x3" -frames:v 1 end.jpg
 ffmpeg -v error -ss <second> -i video.mp4 -frames:v 1 -vf "crop=<side>:<side>:<x>:<y>" -q:v 3 ../batch/photos/<slug>.jpg
 ```
+
+An Instagram reel is vertical: download it with
+`-f "bv*[height<=1920][ext=mp4]/bv*[height<=1920]/b"` to get its 1080 px
+width (`height<=1080`, above, gives 720). Reels often burn their subtitles in, at
+about two thirds of the height, right over the dish: look for a frame
+without them, or frame tighter. Often the dish never fills the frame (the
+cook holds it up, a board at the bottom): a smaller square of the dish alone
+beats a big one with a face in it.
 
 Coordinates on a sheet are in its small scale: multiply them back to the
 video's size (`ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 video.mp4`).
@@ -244,8 +305,9 @@ Tell the user, short:
   and where its photo came from (a frame and its second, or the page's
   image);
 - what went wrong, link by link, with the reason: failed downloads, links
-  without a recipe, Instagram, the unrecognized ones, and the words you
-  corrected in a transcript;
+  without a recipe, Instagram posts with the `message` of `instagram.py
+  meta` (and the ones skipped because the user said no to the session), the
+  unrecognized ones, and the words you corrected in a transcript;
 - how to get the `.zip` to the phone, for their system, without doing it
   yourself:
   - Mac to iPhone: AirDrop, or save it to iCloud Drive and open it in Files;

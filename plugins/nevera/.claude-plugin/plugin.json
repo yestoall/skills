@@ -1,7 +1,7 @@
 {
   "name": "nevera",
-  "version": "0.1.0",
-  "description": "Turn YouTube cooking videos and recipe web pages into a recipe batch with photos that opens in Nevera.",
+  "version": "0.2.0",
+  "description": "Turn YouTube cooking videos, Instagram reels and posts, and recipe web pages into a recipe batch with photos that opens in Nevera.",
   "author": {
     "name": "Nacho Rapallo",
     "url": "https://www.yestoall.com"
@@ -9,5 +9,12 @@
   "homepage": "https://www.yestoall.com/skills#nevera-recipes",
   "repository": "https://github.com/yestoall/skills",
   "license": "MIT",
-  "keywords": ["nevera", "recipes", "youtube", "cooking", "whisper"]
+  "keywords": [
+    "nevera",
+    "recipes",
+    "youtube",
+    "instagram",
+    "cooking",
+    "whisper"
+  ]
 }
