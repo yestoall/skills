@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.3.1
+Versión 0.4.0
 
 ## nevera-recipes
 
@@ -26,6 +26,9 @@ ingredientes, sus pasos y una foto del plato terminado.
   así que puedes pasarle la misma lista dos veces.
 - **Lo que falló, y por qué**: un vídeo privado, una página que no responde, un
   enlace sin receta. Un enlace nunca para a los demás.
+- **Lo revisas antes de enviarlo**: te lista las recetas y las deja en un fichero
+  de texto que puedes leer y cambiar en cualquier editor, o dile a tu IA qué
+  corregir.
 
 ### Instagram y tu navegador
 
@@ -134,7 +137,7 @@ python3 -m unittest
 
 Los tests solo usan la biblioteca estándar. La skill vive en
 `plugins/nevera/skills/nevera-recipes/`: el `SKILL.md` y sus `scripts/`. Cada
-versión es una etiqueta (`v0.3.1`), con su entrada en `CHANGELOG.md` y su número
+versión es una etiqueta (`v0.4.0`), con su entrada en `CHANGELOG.md` y su número
 en el `plugin.json` del plugin, en `marketplace.json` y al principio de los dos
 README; `tests/test_version.py` falla si alguno se queda atrás. El formato del
 Lote tiene su propia versión (`"version": 1`), que solo sube cuando Nevera sabe

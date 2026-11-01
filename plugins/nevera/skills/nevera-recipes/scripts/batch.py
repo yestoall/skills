@@ -3,6 +3,7 @@
 
     python3 batch.py validate FILE          # a .zip or a .json batch
     python3 batch.py pack WORKDIR [OUT.zip] # WORKDIR/recipes.json + its photos
+    python3 batch.py preview WORKDIR [es|en] [--open]  # WORKDIR/review.md, to read
 
 A batch is a .zip with `recipes.json` and a `photos/` folder:
 
@@ -31,11 +32,14 @@ import json
 import os
 import re
 import struct
+import subprocess
 import sys
 import zipfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional, Union
+
+from machine import open_command, this_system
 
 VERSION = 1
 RECIPES_JSON = "recipes.json"
@@ -394,6 +398,56 @@ def _now() -> tuple:
     return _dt.datetime.now().timetuple()[:6]
 
 
+#- preview -
+# The batch in plain text, for the user to read and change in any editor before
+# it goes to the phone. Only one way: the agent reads their changes and carries
+# them over to recipes.json, so this file has no format to keep to.
+
+HEADINGS = {
+    "en": ("Ingredients", "Steps"),
+    "es": ("Ingredientes", "Pasos"),
+}
+
+
+def render_review(parsed: dict, lang: str = "en") -> str:
+    ingredients_title, steps_title = HEADINGS.get(lang, HEADINGS["en"])
+    pages = []
+    for recipe in parsed["recipes"]:
+        lines = [f"# {recipe['name']}"]
+        byline = " · ".join(
+            v for v in (recipe.get("author"), recipe.get("preparationTime")) if v
+        )
+        about = [v for v in (byline, recipe.get("url")) if v]
+        if about:
+            lines += ["", *about]
+        if recipe.get("photo"):
+            file = re.sub(rf"^(\./)?({PHOTOS_DIR}/)?", "", recipe["photo"].strip())
+            lines += ["", f"![{recipe['name']}]({PHOTOS_DIR}/{file})"]
+        if recipe.get("ingredients"):
+            lines += ["", f"## {ingredients_title}", ""]
+            lines += [
+                f"- {i['name']}: {i['quantity']}" if i.get("quantity") else f"- {i['name']}"
+                for i in recipe["ingredients"]
+            ]
+        if recipe.get("preparationSteps"):
+            lines += ["", f"## {steps_title}", ""]
+            lines += [
+                f"{n}. {step}"
+                for n, step in enumerate(recipe["preparationSteps"], start=1)
+            ]
+        pages.append("\n".join(lines) + "\n")
+    return "\n---\n\n".join(pages)
+
+
+def preview(workdir: Union[str, Path], lang: str = "en") -> Path:
+    """WORKDIR/review.md, next to the photos it points at."""
+    workdir = Path(workdir)
+    parsed = json.loads((workdir / RECIPES_JSON).read_text(encoding="utf-8"))
+    path = workdir / "review.md"
+    path.write_text(render_review(parsed, lang), encoding="utf-8")
+    return path
+
+
 #- command line -
 
 
@@ -410,6 +464,15 @@ def main(argv: list) -> int:
         if report.ok:
             print(f"written: {out}")
         return 0 if report.ok else 1
+    if len(argv) >= 2 and argv[0] == "preview":
+        options = argv[2:]
+        should_open = "--open" in options
+        langs = [o for o in options if o != "--open"]
+        path = preview(argv[1], langs[0] if langs else "en")
+        print(f"written: {path}")
+        if should_open:
+            subprocess.run(open_command(this_system(), str(path)), check=False)
+        return 0
     print(__doc__, file=sys.stderr if argv else sys.stdout)
     return 0 if not argv or argv[0] in ("-h", "--help") else 2
 

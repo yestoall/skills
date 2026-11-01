@@ -287,7 +287,59 @@ It checks the batch and writes `~/Nevera/nevera-lote-YYYY-MM-DD.zip` (with
 use. On an error it writes nothing: fix what it names and run it again.
 Read its warnings too: each one is something Nevera would do on its own.
 
-Then record the links, so the next list skips them:
+Keep that path: if the user changes something, the batch is packed again over
+it.
+
+Done when `pack` says `OK`.
+
+## 7. The review
+
+The user sees the recipes before anything leaves this computer: this is the
+last moment to fix them, because Nevera lets them choose recipes but not change
+them.
+
+Write the preview, in the user's language (`es`; anything else gets English
+headings):
+
+```bash
+python3 <scripts>/batch.py preview ~/Nevera/work/batch es
+```
+
+It writes `~/Nevera/work/batch/review.md`: every recipe in plain text. Then tell
+the user, short:
+
+- each recipe: name, where it came from, how many ingredients and steps it has,
+  and where its photo came from (a frame and its second, or the page's image);
+- the words you corrected in a transcript, and any quantity you were unsure of:
+  these are the likeliest to need a look;
+- what went wrong, link by link, with the reason: failed downloads, links
+  without a recipe, Instagram posts with the `message` of `instagram.py meta`
+  (and the ones skipped because the user said no to the session), the
+  unrecognized ones;
+- the path of `review.md`, which they can read and change in any text editor.
+  If they want it opened, add `--open` to the command above. The photos are in
+  `~/Nevera/work/batch/photos/`.
+
+Then ask one question, with the ways to send it from step 8 plus **Change
+something**, so that whoever doesn't want to review takes no extra step.
+
+If they want a change, they say it in their own words ("show me the omelette",
+"it's 200 g", "drop the second one", "another photo"), or they edit `review.md`
+and tell you. Read the file and carry their changes over to `recipes.json`:
+it is `recipes.json` that gets packed, never `review.md`. Then pack again over
+the same `.zip`, write the preview again and repeat the list:
+
+```bash
+python3 <scripts>/batch.py pack ~/Nevera/work/batch <batch.zip>
+```
+
+Done when the user has chosen how to send it, or that it stays where it is.
+
+## 8. Send it
+
+Now that the batch is final, record the links, so the next list skips them. A
+recipe the user dropped in the review is not recorded, so it can be asked for
+again:
 
 ```bash
 python3 <scripts>/links.py record recipe <url> <url> …      # in the batch
@@ -295,23 +347,13 @@ python3 <scripts>/links.py record no-recipe <url> …          # nothing to take
 ```
 
 A link that failed to download is not recorded: next time it is tried again.
-Delete `~/Nevera/work/` when you are done; the batch and the record stay.
+Delete `~/Nevera/work/`; the batch and the record stay.
 
-Done when `pack` says `OK`, the links are recorded and `work/` is gone.
+Then do what they chose, and tell them how it reaches the phone:
 
-## 7. The report
-
-Tell the user, short:
-
-- the path of the `.zip`, and each recipe in it: name, where it came from,
-  and where its photo came from (a frame and its second, or the page's
-  image);
-- what went wrong, link by link, with the reason: failed downloads, links
-  without a recipe, Instagram posts with the `message` of `instagram.py
-  meta` (and the ones skipped because the user said no to the session), the
-  unrecognized ones, and the words you corrected in a transcript;
-- how to get the `.zip` to the phone:
-  - **on a Mac, ask** how they want to send it, and do what they choose:
+- the path of the `.zip`;
+- how to get it there:
+  - on a Mac:
     - iCloud Drive: `python3 <scripts>/deliver.py icloud <batch.zip>` copies
       it to a Nevera folder in iCloud Drive, and it shows up in the Files app
       on the iPhone (in a moment, or more if the connection is slow). The
@@ -339,5 +381,5 @@ Tell the user, short:
   Nevera shows every recipe before saving; the ones whose name the user
   already has come unticked.
 
-Done when the user has the path, the list, the failures and the way to the
-phone, and on a Mac, what they chose is done.
+Done when the links are recorded, `work/` is gone, what they chose is done and
+they know how to open it on the phone.

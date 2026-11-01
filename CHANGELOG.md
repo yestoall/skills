@@ -4,6 +4,15 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.4.0 · 2026-11-01
+
+- The skill stops for a review before sending the batch: it lists the recipes
+  and writes them to `review.md` (`batch.py preview`), to read and change in any
+  text editor, or the user says what to fix. The batch is packed again over the
+  same `.zip`.
+- The links are recorded after the review, not when the batch is first packed,
+  so a recipe dropped in the review can be asked for again.
+
 ## 0.3.1 · 2026-11-01
 
 - AirDrop from a Mac goes through the Finder: `deliver.py airdrop` shows the

@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [Léelo en español](README.es.md)
 
-Version 0.3.1
+Version 0.4.0
 
 ## nevera-recipes
 
@@ -26,6 +26,8 @@ its steps and a photo of the finished dish.
   `~/Nevera/`, so you can give it the same list twice.
 - **What failed, and why**: a private video, a page that doesn't answer, a
   link without a recipe. One link never stops the rest.
+- **You review before sending**: it lists the recipes and writes them to a text
+  file you can read and change in any editor, or just tell your AI what to fix.
 
 ### Instagram and your browser
 
@@ -132,7 +134,7 @@ python3 -m unittest
 
 The tests use only the standard library. The skill lives in
 `plugins/nevera/skills/nevera-recipes/`: `SKILL.md` and its `scripts/`. Each
-version is a tag (`v0.3.1`), with its entry in `CHANGELOG.md` and its number
+version is a tag (`v0.4.0`), with its entry in `CHANGELOG.md` and its number
 in the plugin's `plugin.json`, in `marketplace.json` and at the top of both
 READMEs; `tests/test_version.py` fails if one of them is left behind. The batch
 format has its own version (`"version": 1`), which only goes up when Nevera can

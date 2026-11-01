@@ -12,7 +12,7 @@ from __future__ import annotations
 import os
 import platform
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 
 def this_system(name: Optional[str] = None) -> str:
@@ -20,6 +20,15 @@ def this_system(name: Optional[str] = None) -> str:
     `name` is a `platform.system()` value; without it, this machine's."""
     name = name if name is not None else platform.system()
     return {"Darwin": "macos", "Windows": "windows"}.get(name, "linux")
+
+
+def open_command(system: str, path: str) -> List[str]:
+    """How this system opens a text file with the user's default editor."""
+    if system == "macos":
+        return ["open", "-t", path]
+    if system == "windows":
+        return ["cmd", "/c", "start", "", path]
+    return ["xdg-open", path]
 
 
 def nevera_home() -> Path:
