@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [Léelo en español](README.es.md)
 
-Version 0.8.0
+Version 0.9.0
 
 ## nevera-recipes
 
@@ -18,6 +18,8 @@ its steps and a photo of the finished dish.
   transcribes the audio with Whisper, on your computer, when there aren't.
 - **Instagram reels and posts**: the recipe comes from the post's text and
   from what is said in the reel, transcribed with Whisper.
+- **TikTok videos**: the recipe comes from the post's text and from what is said
+  in the video, transcribed with Whisper.
 - **Recipe web pages**: the recipe the page carries for search engines, or
   its text.
 - **A photo per recipe**: a frame of the finished dish, cropped square,

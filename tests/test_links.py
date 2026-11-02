@@ -22,6 +22,27 @@ class LinkIdentity(unittest.TestCase):
             {link_identity(u) for u in urls}, {"instagram:DdjCD3GIX49"}
         )
 
+    def test_a_tiktok_video_is_the_same_in_every_shape_of_its_long_url(self):
+        urls = [
+            "https://www.tiktok.com/@paufeel/video/749?is_from_webapp=1",
+            "https://tiktok.com/@paufeel/video/749",
+            "https://m.tiktok.com/@paufeel/video/749/",
+            "https://www.tiktok.com/@/video/749",
+            "https://www.tiktok.com/@paufeel/photo/749",
+        ]
+        self.assertEqual({link_identity(u) for u in urls}, {"tiktok:749"})
+
+    def test_a_short_tiktok_link_has_its_own_identity(self):
+        # it doesn't carry the video's id, and getting it would take the network
+        for url, identity in [
+            ("https://vm.tiktok.com/ZMabc-12_3/", "tiktok:ZMabc-12_3"),
+            ("https://vt.tiktok.com/ZSabc123/?_t=8q", "tiktok:ZSabc123"),
+            ("https://www.tiktok.com/t/ZTabc123/", "tiktok:ZTabc123"),
+            ("https://tiktok.com/t/ZTabc123", "tiktok:ZTabc123"),
+        ]:
+            with self.subTest(url=url):
+                self.assertEqual(link_identity(url), identity)
+
     def test_a_youtube_video_is_the_same_in_every_url_shape(self):
         urls = [
             "https://www.youtube.com/watch?v=LEqs_Crvark",
@@ -58,6 +79,10 @@ class LinkIdentity(unittest.TestCase):
             "https://www.instagram.com/chefeggplantt/",
             "https://www.youtube.com/@canal",
             "https://youtube.com/channel/UC123",
+            "https://www.tiktok.com/@paufeel",
+            "https://www.tiktok.com/@paufeel/video/",
+            "https://www.tiktok.com/tag/receta",
+            "https://www.tiktok.com/music/sonido-7494216870204116246",
             "tortilla de patatas",
             "cocina.es/receta",
             "https://localhost/receta",
@@ -122,6 +147,20 @@ class Pending(unittest.TestCase):
             [
                 ("instagram", "instagram:DdHvVqBoycU", "instagram-DdHvVqBoycU"),
                 ("instagram", "instagram:Ddlnn97ttK1", "instagram-Ddlnn97ttK1"),
+            ],
+        )
+
+    def test_a_tiktok_link_is_pending_with_its_kind(self):
+        result = pending(
+            "Look at this one https://vm.tiktok.com/ZMabc/ on TikTok\n"
+            "https://www.tiktok.com/@paufeel/video/749?is_from_webapp=1",
+            self.record,
+        )
+        self.assertEqual(
+            [(link["kind"], link["identity"], link["slug"]) for link in result["pending"]],
+            [
+                ("tiktok", "tiktok:ZMabc", "tiktok-ZMabc"),
+                ("tiktok", "tiktok:749", "tiktok-749"),
             ],
         )
 

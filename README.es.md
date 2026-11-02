@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.8.0
+Versión 0.9.0
 
 ## nevera-recipes
 
@@ -18,6 +18,8 @@ ingredientes, sus pasos y una foto del plato terminado.
   con Whisper, en tu ordenador.
 - **Reels y posts de Instagram**: la receta sale del texto del post y de lo que
   se dice en el reel, transcrito con Whisper.
+- **Vídeos de TikTok**: la receta sale del texto del post y de lo que se dice en
+  el vídeo, transcrito con Whisper.
 - **Webs de recetas**: la receta que la página lleva para los buscadores o, si
   no la lleva, su texto.
 - **Una foto por receta**: un fotograma del plato terminado, recortado en

@@ -4,6 +4,20 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.9.0 · 2026-11-02
+
+- TikTok videos, in their long URLs and in the short ones the app shares
+  (`vm.tiktok.com`, `vt.tiktok.com`, `tiktok.com/t`). `links.py pending` gives them
+  the `tiktok` kind; a profile stays unrecognized.
+- A short link is a link of its own: it doesn't carry the video's id, and getting
+  it would take the network. The recipe keeps the link as the user gave it, so
+  Nevera crosses it off. The same video pasted short and long counts as two links.
+- Whisper transcribes the video, not TikTok's `audio` format, which can be only
+  the song that plays over it.
+- A photo post (`/photo/`) goes to the report: yt-dlp doesn't read them.
+- The last question, how to send the batch, comes as your AI's menu when it has
+  one, instead of as text.
+
 ## 0.8.0 · 2026-11-02
 
 - AirDrop comes first on a Mac, and you only choose your phone: `deliver.py

@@ -6,9 +6,11 @@
 
 Every link is known by its identity, the same rule Nevera uses
 (`linkIdentity` in src/recipes/video.ts): `instagram:<code>`,
-`youtube:<id>`, or a web page's URL without `?` or `#`. One video reaches us
-in many URL shapes (`?si=`, `youtu.be`, `/shorts/`, `?igsh=`, `/reel/` or
-`/p/`); its identity is one.
+`tiktok:<id or short code>`, `youtube:<id>`, or a web page's URL without `?` or
+`#`. One video reaches us in many URL shapes (`?si=`, `youtu.be`, `/shorts/`,
+`?igsh=`, `/reel/` or `/p/`); its identity is one. The exception is a short
+TikTok link (`vm.tiktok.com/...`): it doesn't carry the video's id, and getting
+it would take the network, so it is a link of its own.
 
 The record lives in ~/Downloads/nevera/converted.tsv (NEVERA_HOME overrides
 the folder): one line per link, `identity<TAB>date<TAB>status<TAB>url`. It is
@@ -37,6 +39,14 @@ _INSTAGRAM = re.compile(
     r"^https?://(?:www\.)?instagram\.com/(?:[^/?#]+/)?(?:p|reels?|tv)/(" + _CODE + ")",
     re.IGNORECASE,
 )
+_TIKTOK = re.compile(
+    r"^https?://(?:www\.|m\.)?tiktok\.com/@[^/?#]*/(?:video|photo)/(\d+)",
+    re.IGNORECASE,
+)
+_TIKTOK_SHORT = re.compile(
+    r"^https?://(?:(?:vm|vt)\.tiktok\.com|(?:www\.|m\.)?tiktok\.com/t)/(" + _CODE + ")",
+    re.IGNORECASE,
+)
 _YOUTUBE_WATCH = re.compile(
     r"^https?://(?:www\.|m\.)?youtube\.com/watch\?(?:[^#]*&)?v=(" + _CODE + ")",
     re.IGNORECASE,
@@ -49,17 +59,20 @@ _YOUTUBE_PATH = re.compile(
 )
 _WEB = re.compile(r"^https?://[^\s/?#]+\.[^\s/?#]+(?:[/?#]\S*)?$", re.IGNORECASE)
 _VIDEO_HOSTS = re.compile(
-    r"^https?://(?:[^/?#]+\.)?(?:instagram\.com|youtube\.com|youtu\.be)(?:[/?#:]|$)",
+    r"^https?://(?:[^/?#]+\.)?(?:instagram\.com|tiktok\.com|youtube\.com|youtu\.be)(?:[/?#:]|$)",
     re.IGNORECASE,
 )
 
 
 def source_video(url: Optional[str]) -> Optional[tuple[str, str]]:
-    """(platform, code) for an Instagram post or a YouTube video, else None."""
+    """(platform, code) for an Instagram post or a TikTok or YouTube video, else None."""
     text = (url or "").strip()
     instagram = _INSTAGRAM.match(text)
     if instagram:
         return ("instagram", instagram.group(1))
+    tiktok = _TIKTOK.match(text) or _TIKTOK_SHORT.match(text)
+    if tiktok:
+        return ("tiktok", tiktok.group(1))
     youtube = _YOUTUBE_WATCH.match(text) or _YOUTUBE_PATH.match(text)
     if youtube:
         return ("youtube", youtube.group(1))
@@ -67,7 +80,7 @@ def source_video(url: Optional[str]) -> Optional[tuple[str, str]]:
 
 
 def source_page(url: Optional[str]) -> Optional[str]:
-    """A web page that is not Instagram or YouTube, as it came, else None."""
+    """A web page that is not Instagram, TikTok or YouTube, as it came, else None."""
     text = (url or "").strip()
     if not _WEB.match(text) or _VIDEO_HOSTS.match(text):
         return None

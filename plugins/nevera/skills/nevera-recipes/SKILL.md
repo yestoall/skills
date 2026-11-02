@@ -1,13 +1,13 @@
 ---
 name: nevera-recipes
-description: Turns YouTube cooking videos, Instagram reels and posts, and recipe web pages into a recipe batch for the Nevera app (a .zip with one photo per recipe). Use when the user gives links to recipes they want in Nevera, or asks for a Nevera recipe batch.
+description: Turns YouTube and TikTok cooking videos, Instagram reels and posts, and recipe web pages into a recipe batch for the Nevera app (a .zip with one photo per recipe). Use when the user gives links to recipes they want in Nevera, or asks for a Nevera recipe batch.
 license: MIT
 ---
 
 # Recipes for Nevera
 
-Take the links the user gives you (YouTube videos, Instagram reels and
-posts, and recipe web pages),
+Take the links the user gives you (YouTube and TikTok videos, Instagram reels
+and posts, and recipe web pages),
 write each recipe, pick a photo of the finished dish, and hand over one
 `.zip` the user opens with Nevera on their phone. That `.zip` is a **batch**,
 and its format is a contract Nevera reads: `batch.py` checks it before you
@@ -106,8 +106,8 @@ python3 <scripts>/links.py pending <home>/work/links.txt
 It gives every link once (a video shared as `youtu.be/…?si=` and as
 `watch?v=` is one link), in three groups:
 
-- `pending`: to do, each with its `kind` (`youtube`, `web` or `instagram`)
-  and `slug`.
+- `pending`: to do, each with its `kind` (`youtube`, `web`, `instagram` or
+  `tiktok`) and `slug`.
 - `done`: already in a batch on the date it says, or found without a recipe
   (`no-recipe`). Say so and leave them out; do one again only when the user
   asks for it.
@@ -154,7 +154,7 @@ Go link by link, steps 3 to 5, in `<home>/work/<slug>/`. A link that fails
 with the reason as it came, and you go on with the next: one link never
 stops the batch.
 
-If two YouTube or Instagram links in a row fail with anything but a private,
+If two YouTube, Instagram or TikTok links in a row fail with anything but a private,
 deleted or blocked video, yt-dlp has probably fallen behind the site. Once per
 batch, tell the user in one line, run `yt_dlp_update` from `doctor.py`, and try
 those links again. What still fails goes to the report.
@@ -230,6 +230,29 @@ is a warning, not a failure.
   `python3 <scripts>/instagram.py meta` again to get the reason for the
   report.
 
+### A TikTok video
+
+```bash
+<yt-dlp> <yt_dlp_args> --skip-download -J "$URL" > meta.json
+```
+
+From `meta.json`: `description` is the post's text (often the ingredients, or
+the whole recipe), `uploader` the account (the author, as `@uploader`),
+`duration`. TikTok rarely brings subtitles, so go to Whisper: download the
+video (step 5 needs it anyway) and transcribe **the video**, not its audio
+track. TikTok's `audio` format can be only the song that plays over it:
+
+```bash
+<yt-dlp> <yt_dlp_args> --no-progress -f "bv*[height<=1920][ext=mp4][format_note!=watermarked]/bv*[height<=1920]/b" -o "video.%(ext)s" "$URL"
+<venv python> <scripts>/transcribe.py whisper video.mp4 transcript.txt --language auto
+```
+
+If `commands.python` is null, install Whisper as for a YouTube video. A link to
+a photo post (`/photo/`) makes yt-dlp fail: it goes to the report. So does a
+video TikTok blocks from this network or country, with the reason as it came.
+An `Unsupported URL` that names `tiktok.com/?_r=1` means a short link whose video
+is gone: TikTok sends it to its home page. Say that in the report.
+
 ### A web page
 
 ```bash
@@ -266,9 +289,11 @@ Write it as one object of the batch:
 - **Cross the sources.** The description or the page usually brings the
   ingredients and quantities; the video, the steps and the tricks.
 - `url`: the video's `webpage_url`; for Instagram, the `url` that
-  `instagram.py meta` printed; or the page's URL as the user gave it.
-  `author`: the channel, the Instagram account as `@account`, the recipe's
-  author, or the site's name.
+  `instagram.py meta` printed; for TikTok and for a page, the link as the user
+  gave it. A short TikTok link has a code of its own: with `webpage_url` instead,
+  Nevera would never cross that link off.
+  `author`: the channel, the Instagram or TikTok account as `@account`, the
+  recipe's author, or the site's name.
 - Use only what the sources say: no invented ingredients, quantities or
   steps. If the ingredients or the steps are missing from all of them, the
   link has no recipe: say what is there and what is missing.
@@ -304,7 +329,8 @@ dish is served), then at the frame you pick, and crop it:
 
 An Instagram reel is vertical: download it with
 `-f "bv*[height<=1920][ext=mp4]/bv*[height<=1920]/b"` to get its 1080 px
-width (`height<=1080`, above, gives 720). Reels often burn their subtitles in, at
+width (`height<=1080`, above, gives 720). A TikTok video is vertical too, and
+you already have it. Both often burn their subtitles in, at
 about two thirds of the height, right over the dish: look for a frame
 without them, or frame tighter. Often the dish never fills the frame (the
 cook holds it up, a board at the bottom): a smaller square of the dish alone
@@ -378,7 +404,10 @@ the user, short:
   `<home>/work/batch/photos/`.
 
 Then ask one question, with the ways to send it from step 8 plus **Change
-something**, so that whoever doesn't want to review takes no extra step.
+something**, so that whoever doesn't want to review takes no extra step. Ask it
+with the menu your tool has for questions, so they answer with one choice
+(`AskUserQuestion` in Claude Code), and AirDrop first on a Mac. Only a tool
+without one asks it as a numbered list in the chat.
 
 If they want a change, they say it in their own words ("show me the omelette",
 "it's 200 g", "drop the second one", "another photo"), or they edit `review.md`
