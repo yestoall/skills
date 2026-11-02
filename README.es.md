@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.7.0
+Versión 0.8.0
 
 ## nevera-recipes
 
@@ -99,10 +99,11 @@ Conserva `~/Downloads/nevera/` cuando limpies Descargas: sin ella, la skill vuel
 a instalar Whisper y ya no sabe qué enlaces convirtió.
 
 Al terminar te da la ruta del Lote, `~/Downloads/nevera-lote-AAAA-MM-DD.zip`. En un
-Mac te pregunta cómo quieres pasarlo al teléfono: lo copia a iCloud Drive, o te
-enseña el fichero en el Finder para que hagas clic derecho → **Compartir** →
-**AirDrop**. Desde otro ordenador, usa Quick Share, iCloud Drive, Google Drive o
-un cable. Luego ábrelo:
+Mac te pregunta cómo quieres pasarlo al teléfono: abre AirDrop con el fichero para
+que solo elijas tu teléfono, o lo copia a iCloud Drive. AirDrop necesita Xcode o
+las Command Line Tools. Sin ellas, la skill te enseña el fichero en el Finder para
+que hagas clic derecho → **Compartir** → **AirDrop**. Desde otro ordenador, usa
+Quick Share, iCloud Drive, Google Drive o un cable. Luego ábrelo:
 
 - **En un iPhone**, en la app Archivos (AirDrop lo deja en Descargas), mantén
   pulsado el fichero y toca **Compartir** → Nevera.

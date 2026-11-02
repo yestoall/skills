@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [Léelo en español](README.es.md)
 
-Version 0.7.0
+Version 0.8.0
 
 ## nevera-recipes
 
@@ -97,9 +97,11 @@ skill installs Whisper again and no longer knows which links it converted.
 
 When it's done, it gives you the path of the batch,
 `~/Downloads/nevera-lote-YYYY-MM-DD.zip`. On a Mac, it asks how you want to send
-it to your phone: it copies it to iCloud Drive for you, or shows you the file
-in the Finder, where you Control-click it and choose **Share** → **AirDrop**.
-From anywhere else, use Quick Share, iCloud Drive, Google Drive or a cable.
+it to your phone: it opens AirDrop with the file so you only choose your phone,
+or it copies it to iCloud Drive for you. AirDrop needs Xcode or the Command Line
+Tools. Without them, the skill shows you the file in the Finder, where you
+Control-click it and choose **Share** → **AirDrop**. From anywhere else, use
+Quick Share, iCloud Drive, Google Drive or a cable.
 Then open it:
 
 - **On an iPhone**, in the Files app (AirDrop leaves it in Downloads), touch

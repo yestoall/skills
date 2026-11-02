@@ -4,6 +4,17 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.8.0 · 2026-11-02
+
+- AirDrop comes first on a Mac, and you only choose your phone: `deliver.py
+  airdrop` opens the AirDrop window with the batch and waits for you. It prints
+  `sent` when the Mac reports the send as done.
+- The window comes from `scripts/airdrop.swift`, run with `swift`, so it needs
+  Xcode or the Command Line Tools. Without them, or when the send doesn't finish,
+  the file appears in the Finder as before, and the command prints `finder`.
+- A script can start AirDrop after all: on macOS 27.2, AppKit offers it the
+  sharing service that 0.3.0 says it doesn't.
+
 ## 0.7.0 · 2026-11-01
 
 - The skill says when something needs updating, first thing and in a highlighted

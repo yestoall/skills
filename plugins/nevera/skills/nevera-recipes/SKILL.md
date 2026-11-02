@@ -417,17 +417,26 @@ Then do what they chose, and tell them how it reaches the phone:
 - the path of the `.zip`;
 - how to get it there:
   - on a Mac:
+    - AirDrop, the first one to offer: tell them a window is about to appear
+      and that they choose their phone in it, then run
+      `python3 <scripts>/deliver.py airdrop <batch.zip>`. It waits for them, so
+      give the command at least 5 minutes, or run it in the background. It
+      prints:
+      - `sent`: the Mac reports the send as done. Ask them to check that it
+        reached the phone;
+      - `finder`: the Mac didn't report it as done, and the reason is on stderr.
+        That report can come after the file arrives, so ask whether it reached
+        the phone. If it didn't, the file is now in the Finder: tell them to
+        Control-click it and choose **Share** → **AirDrop** → their phone.
+        Dragging it onto the AirDrop window may start no send.
+
+      If their phone isn't there, AirDrop has to be on, for contacts or for
+      everyone, with the screen unlocked. It doesn't ask which app opens the
+      file: the iPhone saves it to Downloads, in the Files app;
     - iCloud Drive: `python3 <scripts>/deliver.py icloud <batch.zip>` copies
       it to a Nevera folder in iCloud Drive, and it shows up in the Files app
       on the iPhone (in a moment, or more if the connection is slow). The
       `.zip` stays in Downloads too;
-    - AirDrop: `python3 <scripts>/deliver.py airdrop <batch.zip>` shows the
-      file in the Finder. Tell them to Control-click it and choose **Share** →
-      **AirDrop** → their phone: a script can't send it by itself, and
-      dragging it onto the AirDrop window may start no send. If their phone
-      isn't there, AirDrop has to be on, for contacts or for everyone, with
-      the screen unlocked. It doesn't ask which app opens the file: the
-      iPhone saves it to Downloads, in the Files app;
     - nothing: it stays in Downloads, and they can send it however they like;
   - Windows or Linux to Android: tell them Quick Share, Google Drive, or a USB
     cable to the Downloads folder;

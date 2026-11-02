@@ -49,7 +49,7 @@ from machine import nevera_home, this_system
 PYTHON_RANGE = ((3, 9), (3, 14))
 TOOLS = ("yt-dlp", "ffmpeg", "ffprobe", "deno", "node")
 OLD_AFTER_DAYS = 60
-SKILL_VERSION = "0.7.0"
+SKILL_VERSION = "0.8.0"
 PUBLISHED_PLUGIN = (
     "https://raw.githubusercontent.com/yestoall/skills/main"
     "/plugins/nevera/.claude-plugin/plugin.json"

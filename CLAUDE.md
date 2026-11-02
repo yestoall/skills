@@ -12,6 +12,8 @@ skills from it with `npx skills add` or as a Claude Code marketplace.
 - The scripts run with a bare `python3` (3.9+) and the standard library
   only. They import each other as siblings (`from machine import …`), never
   as a package.
+  The one exception is `airdrop.swift`: optional, and `deliver.py` falls back
+  to the Finder without it.
 - Tests: `python3 -m unittest`. The Linux check runs in Docker (see the
   README).
 - A release bumps the version in `plugins/<app>/.claude-plugin/plugin.json`,
