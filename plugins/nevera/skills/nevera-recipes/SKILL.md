@@ -203,7 +203,7 @@ the video (step 5 needs it anyway) and read a contact sheet of the whole of
 it:
 
 ```bash
-<ffmpeg> -v error -i video.mp4 -vf "fps=24/<duration>,scale=320:-1,tile=6x4" -frames:v 1 sheet.jpg
+python3 <scripts>/frames.py video.mp4 sheet.jpg --ffmpeg <ffmpeg> --to <duration> --step <duration/24>
 ```
 
 ### An Instagram post or reel
@@ -323,7 +323,7 @@ dish is served), then at the frame you pick, and crop it:
 
 ```bash
 <yt-dlp> <yt_dlp_args> --no-progress -f "bv*[height<=1080][ext=mp4]/bv*[height<=1080]/b" -o "video.%(ext)s" "$URL"
-<ffmpeg> -v error -ss <start> -t <seconds> -i video.mp4 -vf "fps=1,scale=320:-1,tile=4x3" -frames:v 1 end.jpg
+python3 <scripts>/frames.py video.mp4 end.jpg --ffmpeg <ffmpeg> --from <start> --to <duration> --step 1 --columns 4
 <ffmpeg> -v error -ss <second> -i video.mp4 -frames:v 1 -vf "crop=<side>:<side>:<x>:<y>" -q:v 3 ../batch/photos/<slug>.jpg
 ```
 
@@ -336,8 +336,9 @@ without them, or frame tighter. Often the dish never fills the frame (the
 cook holds it up, a board at the bottom): a smaller square of the dish alone
 beats a big one with a face in it.
 
-Coordinates on a sheet are in its small scale: multiply them back to the
-video's size (`<ffprobe> -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 video.mp4`).
+`frames.py` prints each cell's `row`, `column` and `second`: the `second` of the
+cell you pick is the one to pass to `-ss`. Coordinates on a sheet are in its small
+scale: multiply them back to the video's size (`<ffprobe> -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 video.mp4`).
 Keep the side at 1200 px or less, and never scale up.
 
 From a page: the Recipe's `image` (the largest), then `og:image`. Download it
@@ -428,12 +429,13 @@ recipe the user dropped in the review is not recorded, so it can be asked for
 again:
 
 ```bash
-python3 <scripts>/links.py record recipe <url> <url> …      # in the batch
-python3 <scripts>/links.py record no-recipe <url> …          # nothing to take
+python3 <scripts>/links.py record recipe "<url>" "<url>" …      # in the batch
+python3 <scripts>/links.py record no-recipe "<url>" …            # nothing to take
 ```
 
-A link that failed to download is not recorded: next time it is tried again.
-Then delete the work folder; the batch and the record stay:
+Quote every URL: in zsh, the `?` of a YouTube link stops the command. A link that
+failed to download is not recorded: next time it is tried again. Once `record` has
+said `recorded`, delete the work folder; the batch and the record stay:
 
 ```bash
 python3 <scripts>/work.py clean

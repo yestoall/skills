@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.9.0
+Versión 0.10.0
 
 ## nevera-recipes
 

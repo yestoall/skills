@@ -4,6 +4,15 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.10.0 · 2026-11-03
+
+- Picking the photo takes fewer tries. `scripts/frames.py` makes the contact sheet
+  and prints the exact second of each cell, so the frame you crop is the one you
+  saw. ffmpeg's `fps` filter rounds, and a cell could be seconds away from it.
+- Links with a `?` no longer stop the record in zsh, the default shell on a Mac:
+  the skill quotes every URL, and deletes the work folder only once the record has
+  gone through.
+
 ## 0.9.0 · 2026-11-02
 
 - TikTok videos, in their long URLs and in the short ones the app shares
