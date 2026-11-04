@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [Léelo en español](README.es.md)
 
-Version 0.10.0
+Version 0.11.0
 
 ## nevera-recipes
 
@@ -98,13 +98,21 @@ Keep `~/Downloads/nevera/` when you clean up your Downloads: without it, the
 skill installs Whisper again and no longer knows which links it converted.
 
 When it's done, it gives you the path of the batch,
-`~/Downloads/nevera-lote-YYYY-MM-DD.zip`. On a Mac, it asks how you want to send
-it to your phone: it opens AirDrop with the file so you only choose your phone,
-or it copies it to iCloud Drive for you. AirDrop needs Xcode or the Command Line
+`~/Downloads/nevera-lote-YYYY-MM-DD.zip`, and asks how you want to send it to your
+phone.
+
+First it offers a QR code. Scan it with your phone's camera and Nevera opens with
+the recipes, downloaded straight from your computer over your Wi-Fi. You need Nevera
+2.9.0 or later and your phone on the same Wi-Fi. Nobody has tried it on Android yet,
+so if the camera doesn't open Nevera, use another way. A guest network or a firewall
+can get in the way too.
+
+On a Mac, it can also open AirDrop with the file so you only choose your phone, or
+copy it to iCloud Drive for you. AirDrop needs Xcode or the Command Line
 Tools. Without them, the skill shows you the file in the Finder, where you
 Control-click it and choose **Share** → **AirDrop**. From anywhere else, use
 Quick Share, iCloud Drive, Google Drive or a cable.
-Then open it:
+Sent any of these ways, open it:
 
 - **On an iPhone**, in the Files app (AirDrop leaves it in Downloads), touch
   and hold the file and tap **Share** → Nevera.

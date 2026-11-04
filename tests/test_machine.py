@@ -6,7 +6,13 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from machine import batches_folder, downloads_folder, nevera_home, this_system
+from machine import (
+    batches_folder,
+    downloads_folder,
+    nevera_home,
+    open_image_command,
+    this_system,
+)
 
 
 class System(unittest.TestCase):
@@ -58,6 +64,12 @@ class Home(unittest.TestCase):
         with mock.patch.dict(os.environ, {"NEVERA_HOME": "/tmp/elsewhere"}):
             self.assertEqual(nevera_home(), Path("/tmp/elsewhere"))
             self.assertEqual(batches_folder(), Path("/tmp/elsewhere"))
+
+
+class OpenImageCommand(unittest.TestCase):
+    def test_macos_and_linux_open_it_with_their_default_viewer(self):
+        self.assertEqual(open_image_command("macos", "q.png"), ["open", "q.png"])
+        self.assertEqual(open_image_command("linux", "q.png"), ["xdg-open", "q.png"])
 
 
 if __name__ == "__main__":

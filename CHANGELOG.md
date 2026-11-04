@@ -4,6 +4,17 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.11.0 · 2026-11-04
+
+- A QR code, the first way to send a batch, on any computer. `scripts/deliver.py qr`
+  serves the batch on the local network and shows the code in the chat and in a
+  window. Scan it with your phone's camera and Nevera opens with the recipes. It needs
+  Nevera 2.9.0 or later and the phone on the same Wi-Fi. Nobody has tried it on Android
+  yet.
+- It says `downloaded` as soon as the phone has the batch, and keeps serving for 2
+  more minutes in case you scan it again. Nobody scanning it for 5 minutes ends in
+  `timeout`.
+
 ## 0.10.0 · 2026-11-03
 
 - Picking the photo takes fewer tries. `scripts/frames.py` makes the contact sheet

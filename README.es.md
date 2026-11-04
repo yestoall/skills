@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.10.0
+Versión 0.11.0
 
 ## nevera-recipes
 
@@ -100,12 +100,21 @@ avisa antes.
 Conserva `~/Downloads/nevera/` cuando limpies Descargas: sin ella, la skill vuelve
 a instalar Whisper y ya no sabe qué enlaces convirtió.
 
-Al terminar te da la ruta del Lote, `~/Downloads/nevera-lote-AAAA-MM-DD.zip`. En un
-Mac te pregunta cómo quieres pasarlo al teléfono: abre AirDrop con el fichero para
-que solo elijas tu teléfono, o lo copia a iCloud Drive. AirDrop necesita Xcode o
+Al terminar te da la ruta del Lote, `~/Downloads/nevera-lote-AAAA-MM-DD.zip`, y te
+pregunta cómo quieres pasarlo al teléfono.
+
+Primero te ofrece un QR. Escanéalo con la cámara del teléfono y Nevera se abre con
+las recetas, bajadas directamente de tu ordenador por tu wifi. Necesitas Nevera 2.9.0
+o posterior y el teléfono en la misma wifi. Nadie lo ha probado aún en Android, así
+que si la cámara no abre Nevera, usa otra vía. Una red de invitados o un cortafuegos
+también pueden impedirlo.
+
+En un Mac también puede abrir AirDrop con el fichero para que solo elijas tu
+teléfono, o copiarlo a iCloud Drive. AirDrop necesita Xcode o
 las Command Line Tools. Sin ellas, la skill te enseña el fichero en el Finder para
 que hagas clic derecho → **Compartir** → **AirDrop**. Desde otro ordenador, usa
-Quick Share, iCloud Drive, Google Drive o un cable. Luego ábrelo:
+Quick Share, iCloud Drive, Google Drive o un cable. Por cualquiera de estas vías,
+luego ábrelo:
 
 - **En un iPhone**, en la app Archivos (AirDrop lo deja en Descargas), mantén
   pulsado el fichero y toca **Compartir** → Nevera.

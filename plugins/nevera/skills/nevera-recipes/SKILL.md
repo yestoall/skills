@@ -407,8 +407,8 @@ the user, short:
 Then ask one question, with the ways to send it from step 8 plus **Change
 something**, so that whoever doesn't want to review takes no extra step. Ask it
 with the menu your tool has for questions, so they answer with one choice
-(`AskUserQuestion` in Claude Code), and AirDrop first on a Mac. Only a tool
-without one asks it as a numbered list in the chat.
+(`AskUserQuestion` in Claude Code), and the QR code first. Only a tool without
+one asks it as a numbered list in the chat.
 
 If they want a change, they say it in their own words ("show me the omelette",
 "it's 200 g", "drop the second one", "another photo"), or they edit `review.md`
@@ -447,8 +447,40 @@ Then do what they chose, and tell them how it reaches the phone:
   at the very end of the report: a long batch has scrolled the first one away;
 - the path of the `.zip`;
 - how to get it there:
+  - on any computer, the QR code, the first one to offer. This computer serves the
+    batch on the local network, and Nevera downloads it when they scan the code.
+    It needs Nevera 2.9.0 or later and the phone on the same Wi-Fi. Nobody has tried
+    it on Android yet: say so to whoever has one, and if the camera doesn't open
+    Nevera, go on with another way. Tell them the code is about to appear here and
+    in a window, then run this in the background, because it keeps going after the
+    download and you have to read what it prints as it comes (in Claude Code,
+    `run_in_background`, and Monitor with
+    `until grep -qE '^(downloaded|timeout)$' <output>`):
+
+    ```bash
+    python3 <scripts>/deliver.py qr <batch.zip>
+    ```
+
+    It prints:
+    - the link Nevera opens, first. If the window doesn't open, stderr says where
+      the image is;
+    - the code as text, right after it. As soon as it's there, read it and paste it
+      into your message in a code block, character by character: what a command
+      prints in the background doesn't reach the user. It's drawn for a dark
+      background. If the camera can't read it, they scan the one in the window;
+    - `downloaded`: the phone has the batch. Tell them as soon as you read it. The
+      command keeps serving for 2 more minutes, in case they scan it again, and ends
+      on its own. Don't kill it;
+    - `timeout`: nobody asked for it in 5 minutes, and it's over. Ask again: another
+      code or another way;
+    - an error on stderr and no link: this computer has no network the phone can
+      reach. Ask again, without the QR code.
+
+    If Nevera says the recipes didn't arrive, its card says what to check. If they
+    still can't, the Wi-Fi may keep devices apart, as a guest network does, or a
+    firewall may block it: go on with another way;
   - on a Mac:
-    - AirDrop, the first one to offer: tell them a window is about to appear
+    - AirDrop: tell them a window is about to appear
       and that they choose their phone in it, then run
       `python3 <scripts>/deliver.py airdrop <batch.zip>`. It waits for them, so
       give the command at least 5 minutes, or run it in the background. It
@@ -473,7 +505,8 @@ Then do what they chose, and tell them how it reaches the phone:
     cable to the Downloads folder;
   - to an iPhone from Windows or Linux: tell them iCloud Drive (on the web, at
     icloud.com);
-- and how to open it on the phone:
+- and how to open it on the phone, if it didn't go by QR code, which opens Nevera
+  on its own:
   - iPhone: in the Files app, touch and hold the file, then **Share** →
     Nevera. Don't send them to **Open With**: on recent iOS versions,
     Nevera isn't in that list;
@@ -484,4 +517,5 @@ Then do what they chose, and tell them how it reaches the phone:
   already has come unticked.
 
 Done when the links are recorded, `work/` is gone, what they chose is done and
-they know how to open it on the phone.
+they know how to open it on the phone. By QR code, when you've read `downloaded`,
+or `timeout` and they've chosen what to do.

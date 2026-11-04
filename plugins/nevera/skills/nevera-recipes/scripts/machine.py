@@ -32,6 +32,12 @@ def open_command(system: str, path: str) -> List[str]:
     return ["xdg-open", path]
 
 
+def open_image_command(system: str, path: str) -> List[str]:
+    """How macOS or Linux opens an image with the user's default viewer. Windows
+    has os.startfile, which needs no shell to read the path."""
+    return ["open" if system == "macos" else "xdg-open", path]
+
+
 def _xdg_download() -> Optional[str]:
     try:
         return subprocess.run(
