@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [Léelo en español](README.es.md)
 
-Version 0.11.0
+Version 0.12.0
 
 ## nevera-recipes
 
@@ -147,6 +147,7 @@ The `.zip` holds a `recipes.json` and a `photos/` folder:
       "author": "Cook with Carmen",
       "url": "https://www.youtube.com/watch?v=uc8Pwe7alJ8",
       "category": "eggs",
+      "categories": ["eggs", "dinners"],
       "preparationTime": "45 min",
       "photo": "omelette.jpg",
       "ingredients": [{ "name": "Potatoes", "quantity": "750 g" }],
@@ -155,6 +156,9 @@ The `.zip` holds a `recipes.json` and a `photos/` folder:
   ]
 }
 ```
+
+A recipe can have several types: `categories` lists them all, and `category`
+keeps the first, which is all a Nevera older than 2.9.0's types update reads.
 
 Any tool can write a batch. Check yours with the validator, which needs only
 Python 3.9 or later:

@@ -59,8 +59,8 @@ STRING_FIELDS = (
     "sharedBy",
     "sharedAt",
 )
-# these three never drop a recipe: a bad value is just ignored
-FORGIVEN_FIELDS = ("photo", "photoUrl", "replaces")
+# these never drop a recipe: a bad value is just ignored
+FORGIVEN_FIELDS = ("photo", "photoUrl", "replaces", "categories")
 OTHER_FIELDS = ("name", "id", "isRecipe", "favorite", "v", "ingredients", "preparationSteps")
 KNOWN_FIELDS = set(STRING_FIELDS + FORGIVEN_FIELDS + OTHER_FIELDS)
 # the snake_case of Nevera's old prompt, still read
@@ -199,6 +199,10 @@ def _validate_recipes(parsed, report: Report, photos: Optional[dict]) -> set:
         for old, new in DIALECT.items():
             if old in recipe and new not in recipe:
                 report.warnings.append(f"{label}: write {new!r}, not {old!r}")
+        if "categories" in recipe and not _is_text_list(recipe["categories"]):
+            report.warnings.append(
+                f'{label}: "categories" must be a list of texts: Nevera ignores it'
+            )
         unknown = sorted(set(recipe) - KNOWN_FIELDS - set(DIALECT))
         if unknown:
             report.warnings.append(f"{label}: Nevera ignores {', '.join(unknown)}")
@@ -288,6 +292,46 @@ def _recipe_problems(item) -> list:
     return problems
 
 
+def _is_text_list(value) -> bool:
+    return isinstance(value, list) and all(isinstance(v, str) for v in value)
+
+
+def _categories(recipe: dict) -> list:
+    """The recipe's types, as Nevera joins them: "category" first, then
+    "categories", without repeats (case and outer spaces aside) and without
+    empties. A comma inside "category" does not split it."""
+    found: list = []
+    seen: set = set()
+    values = [recipe.get("category")]
+    if _is_text_list(recipe.get("categories")):
+        values += recipe["categories"]
+    for value in values:
+        if not isinstance(value, str) or not value.strip():
+            continue
+        key = value.strip().lower()
+        if key not in seen:
+            seen.add(key)
+            found.append(value.strip())
+    return found
+
+
+def _with_category(parsed) -> bool:
+    """Gives every recipe that brings "categories" but no "category" its first
+    type as "category": a Nevera from before 2.9.0's types update reads only
+    "category", and would get none. Returns whether anything changed."""
+    if not (isinstance(parsed, dict) and isinstance(parsed.get("recipes"), list)):
+        return False
+    changed = False
+    for recipe in parsed["recipes"]:
+        if not isinstance(recipe, dict) or str(recipe.get("category") or "").strip():
+            continue
+        types = _categories(recipe)
+        if types:
+            recipe["category"] = types[0]
+            changed = True
+    return changed
+
+
 def _label(position: int, item) -> str:
     name = item.get("name") if isinstance(item, dict) else None
     return f"recipe {position}" + (f" ({name.strip()})" if isinstance(name, str) and name.strip() else "")
@@ -362,6 +406,8 @@ def pack(workdir: Union[str, Path], out: Union[str, Path]) -> Report:
         return Report(errors=[f"{recipes_json} does not exist"])
     text = recipes_json.read_text(encoding="utf-8")
     parsed = _parse(text, RECIPES_JSON, Report())
+    if _with_category(parsed):
+        text = json.dumps(parsed, ensure_ascii=False, indent=2) + "\n"
     names = set()
     if isinstance(parsed, dict) and isinstance(parsed.get("recipes"), list):
         for item in parsed["recipes"]:
@@ -416,7 +462,8 @@ def render_review(parsed: dict, lang: str = "en") -> str:
         byline = " · ".join(
             v for v in (recipe.get("author"), recipe.get("preparationTime")) if v
         )
-        about = [v for v in (byline, recipe.get("url")) if v]
+        types = " · ".join(_categories(recipe))
+        about = [v for v in (byline, types, recipe.get("url")) if v]
         if about:
             lines += ["", *about]
         if recipe.get("photo"):

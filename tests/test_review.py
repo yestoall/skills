@@ -57,6 +57,21 @@ class Render(unittest.TestCase):
             ),
         )
 
+    def test_the_types_go_on_their_own_line_joined_like_nevera_does(self):
+        text = render_review(
+            {
+                "recipes": [
+                    {
+                        "name": "Bizcocho",
+                        "category": "Postres",
+                        "categories": ["postres", "Desayunos", "Arroces, pastas"],
+                        "ingredients": [{"name": "Harina", "quantity": "200 g"}],
+                    }
+                ]
+            }
+        )
+        self.assertIn("\nPostres · Desayunos · Arroces, pastas\n", text)
+
     def test_any_other_language_gets_the_english_headings(self):
         text = render_review(batch(recipe("Omelette")), "fr")
         self.assertIn("## Ingredients", text)

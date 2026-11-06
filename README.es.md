@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.11.0
+Versión 0.12.0
 
 ## nevera-recipes
 
@@ -150,6 +150,7 @@ El `.zip` lleva un `recipes.json` y una carpeta `photos/`:
       "author": "Cocina con Carmen",
       "url": "https://www.youtube.com/watch?v=uc8Pwe7alJ8",
       "category": "huevos",
+      "categories": ["huevos", "cenas"],
       "preparationTime": "45 min",
       "photo": "tortilla.jpg",
       "ingredients": [{ "name": "Patatas", "quantity": "750 g" }],
@@ -158,6 +159,9 @@ El `.zip` lleva un `recipes.json` y una carpeta `photos/`:
   ]
 }
 ```
+
+Una receta puede tener varios tipos: `categories` los lleva todos, y `category`
+el primero, que es lo único que lee una Nevera anterior a los tipos de la 2.9.0.
 
 Cualquier herramienta puede escribir un Lote. Comprueba el tuyo con el
 validador, que solo necesita Python 3.9 o más:

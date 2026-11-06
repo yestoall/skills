@@ -4,6 +4,16 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.12.0 · 2026-11-06
+
+- A recipe can have several types: `categories` is a list, every type it fits
+  (a sponge cake can be desserts and breakfasts). `category` keeps the first one,
+  because a Nevera older than its types update reads only that; if the recipe
+  leaves it out, `batch.py pack` copies the first type there.
+- `review.md` shows the types under the author and the time, joined with « · »,
+  as Nevera does. A `categories` that is not a list of texts is a warning, not a
+  dropped recipe: Nevera ignores it too.
+
 ## 0.11.0 · 2026-11-04
 
 - A QR code, the first way to send a batch, on any computer. `scripts/deliver.py qr`

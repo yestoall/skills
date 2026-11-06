@@ -279,6 +279,7 @@ Write it as one object of the batch:
   "author": "Esther Clemente",
   "url": "https://www.youtube.com/watch?v=…",
   "category": "legumes",
+  "categories": ["legumes", "stews"],
   "preparationTime": "1 h 15 min",
   "photo": "<slug>.jpg",
   "ingredients": [{ "name": "Lentils", "quantity": "250 g" }],
@@ -302,8 +303,13 @@ Write it as one object of the batch:
   apart, quantities as text in metric (`200 g`, `1 l`, `2 tbsp`), `""` when
   there is none. Temperatures in °C.
 - `preparationTime`: one total time (`1 h 30 min`), estimated if missing.
-  `category`: one or two words.
-- Every field is text: `""` when unknown, never `null`.
+- `categories`: the recipe's types, one or more, each one or two words: every
+  type it fits (a sponge cake can be `desserts` and `breakfasts`), without
+  repeats. `category` is the first of them: a Nevera older than 2.9.0's types
+  update reads only `category`. If you leave it out, `batch.py pack` copies
+  the first one there.
+- Every field is text: `""` when unknown, never `null`. `categories` is the
+  one list of texts.
 
 Done when the recipe has a name, ingredients and steps from the sources, or
 you know the link has no recipe.
