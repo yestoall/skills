@@ -60,7 +60,7 @@ STRING_FIELDS = (
     "sharedAt",
 )
 # these never drop a recipe: a bad value is just ignored
-FORGIVEN_FIELDS = ("photo", "photoUrl", "replaces", "categories")
+FORGIVEN_FIELDS = ("photo", "photoUrl", "replaces", "categories", "subtitle")
 OTHER_FIELDS = ("name", "id", "isRecipe", "favorite", "v", "ingredients", "preparationSteps")
 KNOWN_FIELDS = set(STRING_FIELDS + FORGIVEN_FIELDS + OTHER_FIELDS)
 # the snake_case of Nevera's old prompt, still read
@@ -202,6 +202,10 @@ def _validate_recipes(parsed, report: Report, photos: Optional[dict]) -> set:
         if "categories" in recipe and not _is_text_list(recipe["categories"]):
             report.warnings.append(
                 f'{label}: "categories" must be a list of texts: Nevera ignores it'
+            )
+        if "subtitle" in recipe and not isinstance(recipe["subtitle"], str):
+            report.warnings.append(
+                f'{label}: "subtitle" must be text ("" when the name says it all): Nevera ignores it'
             )
         unknown = sorted(set(recipe) - KNOWN_FIELDS - set(DIALECT))
         if unknown:
@@ -459,6 +463,9 @@ def render_review(parsed: dict, lang: str = "en") -> str:
     pages = []
     for recipe in parsed["recipes"]:
         lines = [f"# {recipe['name']}"]
+        subtitle = recipe.get("subtitle")
+        if isinstance(subtitle, str) and subtitle.strip():
+            lines += ["", subtitle.strip()]
         byline = " · ".join(
             v for v in (recipe.get("author"), recipe.get("preparationTime")) if v
         )

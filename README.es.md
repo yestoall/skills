@@ -5,7 +5,7 @@ por app; de momento, [Nevera](https://www.yestoall.com/nevera).
 
 [Read it in English](README.md)
 
-Versión 0.12.1
+Versión 0.13.0
 
 ## nevera-recipes
 
@@ -147,6 +147,7 @@ El `.zip` lleva un `recipes.json` y una carpeta `photos/`:
   "recipes": [
     {
       "name": "Tortilla de patatas",
+      "subtitle": "con cebolla y jugosa por dentro",
       "author": "Cocina con Carmen",
       "url": "https://www.youtube.com/watch?v=uc8Pwe7alJ8",
       "category": "huevos",
@@ -162,6 +163,8 @@ El `.zip` lleva un `recipes.json` y una carpeta `photos/`:
 
 Una receta puede tener varios tipos: `categories` los lleva todos, y `category`
 el primero, que es lo único que lee una Nevera anterior a los tipos de la 2.9.0.
+`subtitle` es opcional: una línea que dice qué es el plato cuando el nombre no
+lo cuenta, y `""` cuando sí. Una Nevera sin subtítulos lo ignora.
 
 Cualquier herramienta puede escribir un Lote. Comprueba el tuyo con el
 validador, que solo necesita Python 3.9 o más:

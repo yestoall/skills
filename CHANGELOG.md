@@ -4,6 +4,17 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.13.0 · 2026-11-15
+
+- A recipe can say what it is: `subtitle`, one line for when the name doesn't
+  tell ("Sachertorte" → "chocolate sponge cake with apricot jam"), and `""` when
+  it does. The skill takes the one the source brings (a page's
+  `alternativeHeadline` or short `description`, the end of a video's title) and
+  otherwise writes it from the recipe. A Nevera without subtitles ignores it,
+  and the batch stays at `"version": 1`.
+- `review.md` shows it under the name. A `subtitle` that is not text is a
+  warning, not a dropped recipe: Nevera ignores it too.
+
 ## 0.12.1 · 2026-11-15
 
 - Whisper installs again after your Python was updated. When Homebrew removed

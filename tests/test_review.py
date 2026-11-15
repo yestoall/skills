@@ -72,6 +72,21 @@ class Render(unittest.TestCase):
         )
         self.assertIn("\nPostres · Desayunos · Arroces, pastas\n", text)
 
+    def test_the_subtitle_goes_right_under_the_name(self):
+        text = render_review(
+            batch(recipe("Tarta Sacher", subtitle="bizcocho de chocolate con mermelada de albaricoque")),
+            "es",
+        )
+        self.assertTrue(
+            text.startswith(
+                "# Tarta Sacher\n\nbizcocho de chocolate con mermelada de albaricoque\n\nCocina de casa"
+            )
+        )
+
+    def test_an_empty_subtitle_leaves_no_line(self):
+        text = render_review(batch(recipe("Tortilla", subtitle="")), "es")
+        self.assertTrue(text.startswith("# Tortilla\n\nCocina de casa"))
+
     def test_any_other_language_gets_the_english_headings(self):
         text = render_review(batch(recipe("Omelette")), "fr")
         self.assertIn("## Ingredients", text)

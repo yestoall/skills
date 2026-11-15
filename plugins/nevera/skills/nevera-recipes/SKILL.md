@@ -261,8 +261,9 @@ python3 <scripts>/web.py read page.html > page.json
 ```
 
 `page.json` has `recipes`: the schema.org Recipe of the page
-(`recipeIngredient`, `recipeInstructions`, `totalTime`, `author`, `image`),
-which most recipe sites carry. Without one, it has `text`, the readable text
+(`recipeIngredient`, `recipeInstructions`, `totalTime`, `author`, `image`, and
+`alternativeHeadline` or a short `description` for the subtitle), which most
+recipe sites carry. Without one, it has `text`, the readable text
 of the page: find the ingredients and the steps in it, leaving out menus,
 comments and ads. A page that does not answer, or answers without a recipe,
 goes to the report.
@@ -276,6 +277,7 @@ Write it as one object of the batch:
 ```json
 {
   "name": "Lentil stew",
+  "subtitle": "with chorizo and black pudding",
   "author": "Esther Clemente",
   "url": "https://www.youtube.com/watch?v=…",
   "category": "legumes",
@@ -299,6 +301,15 @@ Write it as one object of the batch:
   steps. If the ingredients or the steps are missing from all of them, the
   link has no recipe: say what is there and what is missing.
 - A short, real name, without "(easy recipe)", emojis or hashtags.
+- `subtitle`: what the dish is, in one line, when the name doesn't say it
+  ("Sachertorte" → "chocolate sponge cake with apricot jam"). If the source
+  brings one, use it: a page's `alternativeHeadline`, or its `description`
+  when that is one short line saying what the dish is (a longer one is a
+  blurb, not a subtitle); a video's title after the dish's name ("Lentil stew
+  | with chorizo and black pudding"). Otherwise write it from the recipe you
+  have (the Sachertorte's sponge and jam are in its ingredients), not from
+  what you'd guess about the dish. When the name says it all, `""`. It is not
+  the notes: tricks, variations and the cook's story stay out.
 - One ingredient per item ("salt and pepper" is two), name and quantity
   apart, quantities as text in metric (`200 g`, `1 l`, `2 tbsp`), `""` when
   there is none. Temperatures in °C.

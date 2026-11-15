@@ -5,7 +5,7 @@ per app; for now, [Nevera](https://www.yestoall.com/nevera).
 
 [Léelo en español](README.es.md)
 
-Version 0.12.1
+Version 0.13.0
 
 ## nevera-recipes
 
@@ -144,6 +144,7 @@ The `.zip` holds a `recipes.json` and a `photos/` folder:
   "recipes": [
     {
       "name": "Spanish omelette",
+      "subtitle": "with onion, soft in the middle",
       "author": "Cook with Carmen",
       "url": "https://www.youtube.com/watch?v=uc8Pwe7alJ8",
       "category": "eggs",
@@ -159,6 +160,8 @@ The `.zip` holds a `recipes.json` and a `photos/` folder:
 
 A recipe can have several types: `categories` lists them all, and `category`
 keeps the first, which is all a Nevera older than 2.9.0's types update reads.
+`subtitle` is optional: one line saying what the dish is when the name doesn't,
+`""` when it does. A Nevera without subtitles ignores it.
 
 Any tool can write a batch. Check yours with the validator, which needs only
 Python 3.9 or later:

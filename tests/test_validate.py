@@ -100,6 +100,19 @@ class EachRecipe(unittest.TestCase):
         self.assertEqual(bad.recipes, 1)
         self.assertTrue(any('"categories"' in w for w in bad.warnings))
 
+    def test_subtitle_is_optional_text_and_a_bad_one_is_only_a_warning(self):
+        for good in (recipe(subtitle="con cebolla y jugosa por dentro"), recipe(subtitle="")):
+            with self.subTest(repr(good["subtitle"])):
+                report = validate(make_zip({"recipes.json": batch(good)}))
+                self.assertEqual(report.errors, [])
+                self.assertFalse(any("subtitle" in w for w in report.warnings))
+        for bad in (None, ["bizcocho"], 3):
+            with self.subTest(repr(bad)):
+                report = validate(make_zip({"recipes.json": batch(recipe(subtitle=bad))}))
+                self.assertEqual(report.errors, [])
+                self.assertEqual(report.recipes, 1)
+                self.assertTrue(any('"subtitle" must be text' in w for w in report.warnings))
+
     def test_an_unknown_field_is_a_warning(self):
         report = validate(make_zip({"recipes.json": batch(recipe(calories="300"))}))
         self.assertEqual(report.errors, [])
