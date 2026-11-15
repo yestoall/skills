@@ -49,7 +49,7 @@ from machine import nevera_home, this_system
 PYTHON_RANGE = ((3, 9), (3, 14))
 TOOLS = ("yt-dlp", "ffmpeg", "ffprobe", "deno", "node")
 OLD_AFTER_DAYS = 60
-SKILL_VERSION = "0.12.0"
+SKILL_VERSION = "0.12.1"
 PUBLISHED_PLUGIN = (
     "https://raw.githubusercontent.com/yestoall/skills/main"
     "/plugins/nevera/.claude-plugin/plugin.json"
@@ -115,7 +115,7 @@ def plan(
         if not js:
             steps.append("curl -fsSL https://deno.land/install.sh | sh")
         if new_venv:
-            steps.append(f"{python} -m venv {venv}")
+            steps.append(_venv_step(python, venv))
         if not has("yt-dlp"):
             steps.append(f'{venv_python(system, venv)} -m pip install "yt-dlp[default]"')
     return steps
@@ -140,9 +140,18 @@ def whisper_plan(
         elif system == "linux":
             python, packages = _venv_packages(python)
             steps.append(_apt_step(packages, has_apt))
-        steps.append(f"{python} -m venv {venv}")
+        steps.append(_venv_step(python, venv))
     steps.append(f"{venv_python(system, venv)} -m pip install faster-whisper")
     return steps
+
+
+def _venv_step(python: Optional[str], venv: str) -> str:
+    # The venv is made only when its Python doesn't run, but the folder may
+    # still be there: a venv made with a Python that Homebrew has since
+    # removed keeps `python` pointing to it. Without --clear, `venv` leaves
+    # that link as it is, and the pip after it fails. Nothing in it is worth
+    # keeping once its Python is gone.
+    return f"{python} -m venv --clear {venv}"
 
 
 def _venv_packages(python: Optional[str]) -> tuple:

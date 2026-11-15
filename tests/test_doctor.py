@@ -66,7 +66,7 @@ class Plan(unittest.TestCase):
                 # a fresh Debian has no package lists, and its python3 lacks
                 # the venv module until python3-venv is in (seen in Docker)
                 "sudo apt-get update && sudo apt-get install -y ffmpeg python3-venv",
-                "/usr/bin/python3 -m venv ~/Downloads/nevera/.venv",
+                "/usr/bin/python3 -m venv --clear ~/Downloads/nevera/.venv",
                 '~/Downloads/nevera/.venv/bin/python -m pip install "yt-dlp[default]"',
             ],
         )
@@ -82,7 +82,7 @@ class WhisperPlan(unittest.TestCase):
             whisper_plan("macos", None, VENV),
             [
                 "brew install python@3.12",
-                "python3.12 -m venv ~/Downloads/nevera/.venv",
+                "python3.12 -m venv --clear ~/Downloads/nevera/.venv",
                 "~/Downloads/nevera/.venv/bin/python -m pip install faster-whisper",
             ],
         )
@@ -92,7 +92,7 @@ class WhisperPlan(unittest.TestCase):
             whisper_plan("windows", None, VENV),
             [
                 "winget install --id Python.Python.3.12 -e",
-                "py -3.12 -m venv ~/Downloads/nevera/.venv",
+                "py -3.12 -m venv --clear ~/Downloads/nevera/.venv",
                 "~/Downloads/nevera/.venv/Scripts/python -m pip install faster-whisper",
             ],
         )
@@ -102,7 +102,7 @@ class WhisperPlan(unittest.TestCase):
             whisper_plan("linux", "/usr/bin/python3", VENV),
             [
                 "sudo apt-get update && sudo apt-get install -y python3-venv",
-                "/usr/bin/python3 -m venv ~/Downloads/nevera/.venv",
+                "/usr/bin/python3 -m venv --clear ~/Downloads/nevera/.venv",
                 "~/Downloads/nevera/.venv/bin/python -m pip install faster-whisper",
             ],
         )
@@ -115,6 +115,15 @@ class WhisperPlan(unittest.TestCase):
                     whisper_plan(system, None, VENV, venv_exists=True),
                     ["~/Downloads/nevera/.venv/bin/python -m pip install faster-whisper"],
                 )
+
+
+    def test_a_venv_whose_python_is_gone_is_made_again_from_scratch(self):
+        # seen on macOS: Homebrew removed python@3.14, and `python -m venv`
+        # over the old folder kept bin/python pointing to it
+        self.assertIn(
+            "python3.13 -m venv --clear ~/Downloads/nevera/.venv",
+            whisper_plan("macos", "python3.13", VENV, venv_exists=False),
+        )
 
 
 class OldYtDlp(unittest.TestCase):

@@ -4,6 +4,13 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## 0.12.1 · 2026-11-15
+
+- Whisper installs again after your Python was updated. When Homebrew removed
+  the Python your venv was made with, `doctor.py` asked for Whisper and its
+  steps kept failing: the new venv went over the old folder and left `python`
+  pointing to the Python that was gone. The venv is now made from scratch.
+
 ## 0.12.0 · 2026-11-06
 
 - A recipe can have several types: `categories` is a list, every type it fits
