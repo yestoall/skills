@@ -7,8 +7,9 @@ skills from it with `npx skills add` or as a Claude Code marketplace.
   exception to the yestoall workspace rule of comments in Spanish: the
   readers are strangers. The README has a complete Spanish twin, `README.es.md`: a change to one goes
   to the other.
-- One plugin per app (`plugins/<app>/`), each skill in
-  `plugins/<app>/skills/<skill>/`: its `SKILL.md` and its `scripts/`.
+- One plugin per app or tool (`plugins/<name>/`: Nevera is an app, Tipos a
+  tool), each skill in `plugins/<name>/skills/<skill>/`: its `SKILL.md` and,
+  if it has any, its `scripts/`.
 - The scripts run with a bare `python3` (3.9+) and the standard library
   only. They import each other as siblings (`from machine import …`), never
   as a package.

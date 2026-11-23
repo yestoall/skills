@@ -4,6 +4,14 @@ Each version is a git tag. The plugin's version lives in its `plugin.json`;
 the batch format has a version of its own (`"version": 1` in
 `recipes.json`).
 
+## Unreleased
+
+- A new plugin, `tipos`: change the type of your website or app with
+  [Tipos](https://www.yestoall.com/tipos/en). Your AI reads your code, opens
+  each part of your interface in Tipos with the type it has today, and puts
+  what you tune there back in your code as a `type-<part>` class, one part at
+  a time. It is prose only: no scripts, nothing to install.
+
 ## 0.13.0 · 2026-11-15
 
 - A recipe can say what it is: `subtitle`, one line for when the name doesn't

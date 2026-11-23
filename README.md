@@ -1,7 +1,8 @@
 # yestoall skills
 
-Skills for the AI on your computer, made for the yestoall apps. One plugin
-per app; for now, [Nevera](https://www.yestoall.com/nevera).
+Skills for the AI on your computer, made for the yestoall apps and tools. One
+plugin each: [Nevera](https://www.yestoall.com/nevera) and
+[Tipos](https://www.yestoall.com/tipos/en).
 
 [Léelo en español](README.es.md)
 
@@ -183,6 +184,60 @@ in the plugin's `plugin.json`, in `marketplace.json`, in `doctor.py` and at the 
 READMEs; `tests/test_version.py` fails if one of them is left behind. The batch
 format has its own version (`"version": 1`), which only goes up when Nevera can
 read the new one and still reads the old.
+
+## tipos
+
+Change the type of your website or app with
+[Tipos](https://www.yestoall.com/tipos/en), seeing it before it goes in. Your AI
+reads your code, finds the parts of your interface that carry their own type
+(the buttons, the labels, the section titles), and opens each one in Tipos
+with the type it has today. You tune it by eye, copy the prompt from **To go**,
+and paste it back. Your AI puts it in your code and moves on to the next one.
+
+- **It starts from your type**: font, size, line height, weight and letter
+  spacing, read from your CSS, your Tailwind or Uniwind classes, or your React
+  Native styles.
+- **You name the parts**: "the button", "the labels". Each one becomes a class,
+  `type-button`, `type-labels`, and lives in one place.
+- **One part at a time**: tune it, paste it, check that the project builds,
+  then the next one.
+- **Nothing you didn't ask for**: if a part has different type in different
+  places, your AI shows you where before it unifies them. If a component
+  doesn't let the class through, it asks you first.
+- **Fonts from the Tipos catalog**, all under the OFL: Allo, Inter, Inrond,
+  Pollen and Google Sans Flex. If your font isn't one of them, you start on the
+  closest one, and your AI tells you.
+
+### Install
+
+With any AI that reads skills, using Node 22 or later:
+
+```bash
+npx skills add yestoall/skills --skill tipos
+```
+
+In Claude Code, you can also add this repository as a plugin marketplace:
+
+```text
+/plugin marketplace add yestoall/skills
+/plugin install tipos@yestoall
+```
+
+### Use
+
+Ask your AI in your own words:
+
+> Change the type of my app with Tipos
+
+It shows you the parts it found, each with its type and where it is, and asks
+which ones you want to tune and what to call them. Then it opens Tipos in your
+browser with the first one. Tipos is in Spanish and English, and your AI opens
+the one you speak.
+
+When you like it, open **To go** in Tipos, copy the **Web prompt** for a
+website or the **App prompt** for a React Native app, and paste it into the
+chat. Your AI only takes the type from it: anything else it shows you and asks.
+When you're done, it gives you a summary of what changed and what's left.
 
 ## License
 
