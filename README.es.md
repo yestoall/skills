@@ -190,21 +190,21 @@ leer la nueva y sigue leyendo la anterior.
 
 ## tipos
 
-Cambia la letra de tu web o de tu App con
+Cambia la tipografía de tu web o de tu App con
 [Tipos](https://www.yestoall.com/tipos), viéndola antes de ponerla. Tu IA lee tu
-código, encuentra las piezas de tu interfaz que llevan letra propia (los
+código, encuentra las piezas de tu interfaz que llevan tipografía propia (los
 botones, las etiquetas, los títulos de sección) y te abre cada una en Tipos con
-la letra que tiene hoy. La ajustas a ojo, copias el prompt de **Para llevar** y
-se lo pegas. Tu IA la pone en tu código y pasa a la siguiente.
+la tipografía y las palabras que tiene hoy. La ajustas a ojo, pulsas **Copiar para tu
+agente** y se lo pegas. Tu IA la pone en tu código y pasa a la siguiente.
 
-- **Parte de tu letra**: fuente, tamaño, interlineado, peso y espaciado, leídos
+- **Parte de tu tipografía**: fuente, tamaño, interlineado, peso y espaciado, leídos
   de tu CSS, de tus clases de Tailwind o Uniwind o de tus estilos de React
   Native.
 - **Las piezas las nombras tú**: «el botón», «las etiquetas». Cada una se
   queda en una clase, `type-boton`, `type-etiquetas`, y vive en un solo sitio.
 - **Una pieza cada vez**: la ajustas, la pegas, comprueba que el proyecto
   compila y pasa a la siguiente.
-- **Nada que no hayas pedido**: si una pieza lleva letras distintas en sitios
+- **Nada que no hayas pedido**: si una pieza lleva tipografías distintas en sitios
   distintos, tu IA te enseña dónde antes de unificarlas. Si un componente no
   deja pasar la clase, te pregunta primero.
 - **Las fuentes del catálogo de Tipos**, todas con licencia OFL: Allo, Inter,
@@ -231,17 +231,18 @@ plugins:
 
 Pídeselo a tu IA con tus palabras:
 
-> Cambia la letra de mi App con Tipos
+> Cambia la tipografía de mi App con Tipos
 
-Te enseña las piezas que ha encontrado, cada una con su letra y dónde está, y
+Te enseña las piezas que ha encontrado, cada una con su tipografía y dónde está, y
 te pregunta cuáles quieres ajustar y cómo llamarlas. Luego te abre Tipos en el
 navegador con la primera. Tipos está en castellano y en inglés, y tu IA te abre
 el de tu idioma.
 
-Cuando te guste, abre **Para llevar** en Tipos, copia el **Prompt web** si es
-una web o el **Prompt App** si es una App de React Native, y pégalo en el chat.
-Tu IA solo coge de ahí la letra: lo demás te lo enseña y te pregunta. Al
-terminar, te da un resumen de lo que ha cambiado y de lo que queda.
+Cuando te guste, pulsa **Copiar para tu agente**, debajo del texto en Tipos, y
+pégalo en el chat. Copia solo la tipografía: la fuente, las medidas y las
+alternativas, sin código. Tu IA la escribe como tu proyecto ya pone la suya, y
+lo que no sea tipografía te lo enseña y te pregunta. Al terminar, te da un resumen
+de lo que ha cambiado y de lo que queda.
 
 ## Licencia
 

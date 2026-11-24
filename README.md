@@ -191,8 +191,9 @@ Change the type of your website or app with
 [Tipos](https://www.yestoall.com/tipos/en), seeing it before it goes in. Your AI
 reads your code, finds the parts of your interface that carry their own type
 (the buttons, the labels, the section titles), and opens each one in Tipos
-with the type it has today. You tune it by eye, copy the prompt from **To go**,
-and paste it back. Your AI puts it in your code and moves on to the next one.
+with the type and the words it has today. You tune it by eye, press **Copy for
+your agent**, and paste it back. Your AI puts it in your code and moves on to
+the next one.
 
 - **It starts from your type**: font, size, line height, weight and letter
   spacing, read from your CSS, your Tailwind or Uniwind classes, or your React
@@ -234,9 +235,10 @@ which ones you want to tune and what to call them. Then it opens Tipos in your
 browser with the first one. Tipos is in Spanish and English, and your AI opens
 the one you speak.
 
-When you like it, open **To go** in Tipos, copy the **Web prompt** for a
-website or the **App prompt** for a React Native app, and paste it into the
-chat. Your AI only takes the type from it: anything else it shows you and asks.
+When you like it, press **Copy for your agent**, under the text in Tipos, and
+paste it into the chat. It copies only the type: the font, the measurements
+and the alternates, with no code. Your AI writes it the way your project
+already sets its type, and anything that isn't type it shows you and asks.
 When you're done, it gives you a summary of what changed and what's left.
 
 ## License
